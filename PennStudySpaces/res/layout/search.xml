@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bgrepeat"
+    android:orientation="vertical"
+    android:padding="5dip" >
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1" >
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/searchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onSearchButtonClick"
+                android:text="@string/search_button" />
+        </TableRow>
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/numberOfPeopleTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/black" />
+
+    <SeekBar
+        android:id="@+id/numberOfPeopleSlider"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:max="19"
+        android:progress="0" />
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <!-- android:stretchColumns="1" -->
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/startTimeDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/pickStartTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select start time" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/endTimeDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/pickEndTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select end time" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/dateDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/pickDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select date" />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <CheckBox
+                android:id="@+id/privateCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/private_check_box"
+                android:textColor="@color/black" />
+
+            <CheckBox
+                android:id="@+id/whiteboardCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/whiteboard_check_box"
+                android:textColor="@color/black" />
+
+            <CheckBox
+                android:id="@+id/computerCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/computer_check_box"
+                android:textColor="@color/black" />
+
+            <CheckBox
+                android:id="@+id/projectorCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/projector_check_box"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.3"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <CheckBox
+                    android:id="@+id/engibox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:typeface="serif" />
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginRight="6dip"
+                    android:layout_marginTop="10dp"
+                    android:antialias="true"
+                    android:src="@drawable/engiicon" />
+                <TextView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    android:layout_marginTop="5dp"
+                    android:text = "ngineering"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <CheckBox
+                    android:id="@+id/whartonbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:typeface="serif" />
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginRight="6dip"
+                    android:layout_marginTop="10dp"
+                    android:antialias="true"
+                    android:src="@drawable/whartonicon" />
+                <TextView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    android:layout_marginTop="5dp"
+                    android:text = "harton"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <CheckBox
+                    android:id="@+id/libbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:typeface="serif" />
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginRight="6dip"
+                    android:layout_marginTop="10dp"
+                    android:antialias="true"
+                    android:src="@drawable/libicon" />
+                <TextView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    android:layout_marginTop="5dp"
+                    android:text = "ibrary"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <CheckBox
+                    android:id="@+id/otherbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:typeface="serif" />
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginRight="6dip"
+                    android:layout_marginTop="10dp"
+                    android:antialias="true"
+                    android:src="@drawable/othericon" />
+                <TextView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    android:layout_marginTop="5dp"
+                    android:text = "thers"
+                    />
+            </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>

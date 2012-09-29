@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:background="#3C3A43"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="1dp"
+            android:layout_weight="1"
+            android:background="@color/darkgrey"
+            android:orientation="vertical"
+            android:onClick="onDetailsClick" >
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="3dp"
+                android:id="@+id/button_details"
+                android:background="@color/darkgrey" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="37dp"
+                android:gravity="center"
+                android:text="@string/info"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@color/darkgrey"
+            android:orientation="vertical"
+            android:onClick="onFourSquareClick" >
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="3dp"
+                android:id="@+id/button_foursquare"
+                android:background="@color/darkgrey" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="37dp"
+                android:gravity="center"
+                android:text="@string/details"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:background="@color/darkgrey"
+            android:orientation="vertical"            
+            android:onClick="onMapClick" >
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="3dp"
+                android:id="@+id/button_map"
+                android:background="@color/darkgrey" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="37dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/map"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:clickable="true"
+                android:onClick="onMapClick" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/fragment_container"
+        android:layout_above="@id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="edu.upenn.cis350.TabDetails" />
+
+    
+
+</RelativeLayout>

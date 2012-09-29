@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Penn StudySpaces</string>
+    <string name="main_no_items">No rooms available</string>
+    <string name="search_button">Search</string>
+    <string name="private_check_box">Private</string>
+    <string name="whiteboard_check_box">Whiteboard</string>
+    <string name="computer_check_box">Computer</string>
+    <string name="projector_check_box">Projector</string>
+    
+    <string name="map">Map</string>
+    <string name="details">Details</string>
+    <string name="info">Info</string>
+    
+    
+    <string name="filter">filter</string>
+    <string name="favorites">favorites</string>
+    <string name="add_favorites">Add to favorites</string>
+    <string name="remove_favorites">Unfavorite</string>
+    <string name="your_favorite">This is your favorite StudySpace</string>
+    
+    <string name="add_calendar">Add to Calendar</string>
+    <string name="add_reserve">Reserve Online</string>
+    <string name="add_text">Notify friends</string>
+</resources>

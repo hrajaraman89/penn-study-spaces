@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"    
+    android:background="@drawable/bgrepeat"    
+    android:minHeight="500dp"
+    android:orientation="vertical" >
+    
+    <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Created By:"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            android:textSize="24sp"/>
+    
+    <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Archit Budhraja&#10;Parth Doshi&#10;Peter Kutz&#10;Alex Yau"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/lightblue"
+            android:textSize="24sp"/>
+    
+    <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This app was created to complement the PennStudySpaces website.&#10;&#10;All data is provided by PennApps Labs and the creators bear no responsbility for any information contained in this app."
+
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/darkgrey"
+            android:textSize="18sp"/>
+
+    <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="For assistance, please contact (732)-995-5452&#10;&#10;(C) PennStudySpaces Blue Team 2012."
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/darkgrey"
+            android:textSize="18sp"/>
+
+</LinearLayout>
+</ScrollView>

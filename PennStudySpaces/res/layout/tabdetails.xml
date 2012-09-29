@@ -1,0 +1,259 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bgrepeat"
+        android:minHeight="500dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/spacename"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/lightblue"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/roomtype"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/roomnumbers"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/maxoccupancy"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:id="@+id/private_icon"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:padding="5dp"/>
+
+                    <TextView
+                        android:id="@+id/privacy"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:textColor="@color/darkgrey" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:id="@+id/whiteboard_icon"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:padding="5dp" />
+
+                    <TextView
+                        android:id="@+id/whiteboard"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:textColor="@color/darkgrey" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:id="@+id/computer_icon"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:padding="5dp" />
+
+                    <TextView
+                        android:id="@+id/computer"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:textColor="@color/darkgrey" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:id="@+id/projector_icon"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:padding="5dp"/>
+
+                    <TextView
+                        android:id="@+id/projector"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:textColor="@color/darkgrey" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/reservetype"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black" />
+        </LinearLayout>
+		<TextView
+		    android:id="@+id/availablenow"
+		    android:layout_width="fill_parent"
+		    android:gravity="center"
+		    android:layout_height="wrap_content"
+		    android:text="AVAILABLE NOW"
+		    android:textSize="30sp"
+		    android:textColor="@color/lightblue"
+		    />
+        <TextView
+            android:id="@+id/favorite"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@color/yellow"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onFavClick"
+            android:padding="10dp"
+            android:text="@string/add_favorites"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:id="@+id/unfavorite"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1.5"
+                android:gravity="left"
+                android:padding="10dp"
+                android:text="@string/your_favorite"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@color/red"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="onRemoveFavClick"
+                android:padding="10dp"
+                android:text="@string/remove_favorites"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/addCal"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="20dp" >
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/lightgreen"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="onCalClick"
+                android:padding="10dp"
+                android:text="@string/add_calendar"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <CheckBox
+                android:id="@+id/calTextCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_text"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/reserve"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="20dp" >
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/lightblue"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="onReserveClick"
+                android:padding="10dp"
+                android:text="@string/add_reserve"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <CheckBox
+                    android:id="@+id/calCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_calendar"
+                    android:textColor="@color/black" />
+
+                <CheckBox
+                    android:id="@+id/resTextCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_text"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>
