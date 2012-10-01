@@ -1,4 +1,4 @@
-package edu.upenn.cis350;
+package edu.upenn.studyspaces;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
