@@ -1,7 +1,5 @@
 package edu.upenn.studyspaces;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -12,8 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,8 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -83,10 +77,6 @@ public class StudySpaceListActivity extends ListActivity {
         ss_ProgressDialog = ProgressDialog.show(StudySpaceListActivity.this,
                 "Please wait...", "Retrieving data ...", true);
 
-        // Start up the search options screen
-        Intent i = new Intent(this, SearchActivity.class);
-        startActivityForResult(i,
-                StudySpaceListActivity.ACTIVITY_SearchActivity);
         /*
          * engiBox.setChecked(true); engiBox.setOnCheckedChangeListener(new
          * CompoundButton.OnCheckedChangeListener() { public void
@@ -195,9 +185,7 @@ public class StudySpaceListActivity extends ListActivity {
 
     public void onFilterClick(View view) {
         // Start up the search options screen
-        Intent i = new Intent(this, SearchActivity.class);
-        startActivityForResult(i,
-                StudySpaceListActivity.ACTIVITY_SearchActivity);
+        finish();
     }
 
     private class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {

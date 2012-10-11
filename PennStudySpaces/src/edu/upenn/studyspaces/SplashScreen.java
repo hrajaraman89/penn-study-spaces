@@ -1,7 +1,6 @@
 package edu.upenn.studyspaces;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -33,7 +32,7 @@ public class SplashScreen extends Activity {
                 } finally {
                     finish();
                     startActivity(new Intent(SplashScreen.this,
-                            StudySpaceListActivity.class));
+                            SearchActivity.class));
                 }
             }
         };

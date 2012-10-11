@@ -507,12 +507,12 @@ public class SearchActivity extends Activity {
     public void onSearchButtonClick(View view) {
         putDataInSearchOptionsObject();
         // Returns to List activity
-        Intent i = new Intent();
+        Intent i = new Intent(this, StudySpaceListActivity.class);
         // Put your searchOption class here
         i.putExtra("SEARCH_OPTIONS", (Serializable) mSearchOptions);
         setResult(RESULT_OK, i);
         // ends this activity
-        finish();
+        startActivity(i);
     }
 
     private void putDataInSearchOptionsObject() {
