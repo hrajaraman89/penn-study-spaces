@@ -239,18 +239,21 @@ public class CustomMap extends MapActivity {
              * projection.toPixels(selected.getPoint(), null); //get coordinates
              * so you can do your drawing code afterward }
              */
-            super.draw(canvas, mapView, shadow);
+            if (!shadow) {
+                super.draw(canvas, mapView, shadow);
 
-            // ---translate the GeoPoint to screen pixels---
-            Point screenPts = new Point();
-            for (int i = 0; i < mOverlays.size(); i++) {
-                mapView.getProjection().toPixels(mOverlays.get(i).getPoint(),
-                        screenPts);
+                // ---translate the GeoPoint to screen pixels---
+                Point screenPts = new Point();
+                for (int i = 0; i < mOverlays.size(); i++) {
+                    mapView.getProjection().toPixels(
+                            mOverlays.get(i).getPoint(), screenPts);
 
-                // ---add the marker---
-                Bitmap bmp = ((BitmapDrawable) marker).getBitmap();
-                // Positions the image
-                canvas.drawBitmap(bmp, screenPts.x - 10, screenPts.y - 34, null);
+                    // ---add the marker---
+                    Bitmap bmp = ((BitmapDrawable) marker).getBitmap();
+                    // Positions the image
+                    canvas.drawBitmap(bmp, screenPts.x - 10, screenPts.y - 34,
+                            null);
+                }
             }
         }
     }
