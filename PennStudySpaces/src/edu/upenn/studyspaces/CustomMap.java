@@ -228,34 +228,6 @@ public class CustomMap extends MapActivity {
             return true;
         }
 
-        @Override
-        public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-            /*
-             * if(!shadow) // if you have a custom image you may not want the
-             * shadow to be drawn super.draw(canvas,mapV,shadow); if(selected !=
-             * null) { // selected just means that something was clicked // it
-             * isn't defined in this example Projection projection =
-             * mapV.getProjection(); Point drawPoint =
-             * projection.toPixels(selected.getPoint(), null); //get coordinates
-             * so you can do your drawing code afterward }
-             */
-            if (!shadow) {
-                super.draw(canvas, mapView, shadow);
-
-                // ---translate the GeoPoint to screen pixels---
-                Point screenPts = new Point();
-                for (int i = 0; i < mOverlays.size(); i++) {
-                    mapView.getProjection().toPixels(
-                            mOverlays.get(i).getPoint(), screenPts);
-
-                    // ---add the marker---
-                    Bitmap bmp = ((BitmapDrawable) marker).getBitmap();
-                    // Positions the image
-                    canvas.drawBitmap(bmp, screenPts.x - 10, screenPts.y - 34,
-                            null);
-                }
-            }
-        }
     }
 
 }
