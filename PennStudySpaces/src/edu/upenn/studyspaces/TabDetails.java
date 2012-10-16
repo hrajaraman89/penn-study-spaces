@@ -1,16 +1,12 @@
 package edu.upenn.studyspaces;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -211,16 +207,15 @@ public class TabDetails extends Fragment {
 
     public Intent getCalIntent(View v) {
         Calendar cal = Calendar.getInstance();
-        Intent intent = new Intent(Intent.ACTION_EDIT);
-        intent.setType("vnd.android.cursor.item/event");
-        intent.putExtra("beginTime", cal.getTimeInMillis());
-
-        intent.putExtra("endTime", cal.getTimeInMillis() + 60 * 60 * 1000);
-        intent.putExtra(
-                "title",
-                "PennStudySpaces Reservation confirmed. Details - "
-                        + o.getBuildingName() + " - "
-                        + o.getRooms()[0].getRoomName() + "\nTime: ");
+        Intent intent = new Intent(Intent.ACTION_EDIT)
+                .setType("vnd.android.cursor.item/event")
+                .putExtra("beginTime", cal.getTimeInMillis())
+                .putExtra("endTime", cal.getTimeInMillis() + 60 * 60 * 1000)
+                .putExtra("title", "PennStudySpaces Reservation")
+                .putExtra(
+                        "eventLocation",
+                        o.getBuildingName() + " - "
+                                + o.getRooms()[0].getRoomName());
         return intent;
     }
 
