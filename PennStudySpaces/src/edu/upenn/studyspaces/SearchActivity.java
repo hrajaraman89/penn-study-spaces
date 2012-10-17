@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +22,10 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 public class SearchActivity extends Activity {
 
@@ -60,6 +65,8 @@ public class SearchActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
+        
+        checkConnection();
 
         search = getSharedPreferences(SEARCH_PREFERENCES, 0);
 
@@ -597,6 +604,18 @@ public class SearchActivity extends Activity {
             break;
         }
         return true;
+    }
+    
+    private void checkConnection() {
+    	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+    	if (networkInfo == null ||  !networkInfo.isConnected()) {
+    		Context context = getApplicationContext();
+    		Toast toast = Toast.makeText(context, "", Toast.LENGTH_LONG);
+    		toast.setGravity(Gravity.CENTER, 0, 0);
+    		toast.setText("No network connection available.");
+    		toast.show();
+    	}
     }
 
 }
