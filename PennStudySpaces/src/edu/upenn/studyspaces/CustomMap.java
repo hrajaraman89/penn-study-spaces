@@ -121,7 +121,9 @@ public class CustomMap extends MapActivity {
 
         mapOverlays = mapView.getOverlays();
         mapOverlays.add(buildingPin);
-        mapOverlays.add(currentLocationPin);
+        if (currentLocationPin != null) {
+            mapOverlays.add(currentLocationPin);
+        }
 
         avg = new GeoPoint((int) (avgLat * 1E6), (int) (avgLong * 1E6));
 
