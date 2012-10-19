@@ -5,22 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.ItemizedOverlay;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
-
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
@@ -29,10 +16,16 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 
 public class CustomMap extends MapActivity {
 
@@ -40,11 +33,12 @@ public class CustomMap extends MapActivity {
     MapView mapView;
     MapController mc;
     GeoPoint p;
-    GeoPoint q;
+    GeoPoint currentLocationGeoPoint;
     GeoPoint avg;
     List<Overlay> mapOverlays;
-    Drawable drawable;
-    PinOverlay pins;
+    Drawable buildingPinDrawable;
+    PinOverlay buildingPin;
+    PinOverlay currentLocationPin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,8 +50,8 @@ public class CustomMap extends MapActivity {
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
 
-        drawable = this.getResources().getDrawable(R.drawable.pushpin);
-        pins = new PinOverlay(drawable);
+        buildingPinDrawable = this.getResources().getDrawable(R.drawable.pushpin);
+        buildingPin = new PinOverlay(buildingPinDrawable);
 
         mc = mapView.getController();
 
@@ -106,10 +100,13 @@ public class CustomMap extends MapActivity {
             avgLong += gpsLong;
             avgLong /= 2.0;
 
-            q = new GeoPoint((int) (gpsLat * 1E6), (int) (gpsLong * 1E6));
+            currentLocationGeoPoint = new GeoPoint((int) (gpsLat * 1E6), (int) (gpsLong * 1E6));
 
-            OverlayItem overlayitem = new OverlayItem(q, "", "");
-            pins.addOverlay(overlayitem);
+            Drawable currentLocationPinDrawable = this.getResources().getDrawable(R.drawable.bluepin);
+            currentLocationPin = new PinOverlay(currentLocationPinDrawable);
+
+            OverlayItem overlayitem = new OverlayItem(currentLocationGeoPoint, "", "");
+            currentLocationPin.addOverlay(overlayitem);
         }
 
         /*
@@ -118,12 +115,13 @@ public class CustomMap extends MapActivity {
          * listOfOverlays.add(mapOverlay);
          */
 
-        OverlayItem overlayitem = new OverlayItem(p, "", "");
+        OverlayItem overlayitem = new OverlayItem(p, "AA ", "BB ");
 
-        pins.addOverlay(overlayitem);
+        buildingPin.addOverlay(overlayitem);
 
         mapOverlays = mapView.getOverlays();
-        mapOverlays.add(pins);
+        mapOverlays.add(buildingPin);
+        mapOverlays.add(currentLocationPin);
 
         avg = new GeoPoint((int) (avgLat * 1E6), (int) (avgLong * 1E6));
 
