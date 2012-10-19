@@ -37,6 +37,7 @@ public class CustomMap extends MapActivity {
     GeoPoint avg;
     List<Overlay> mapOverlays;
     Drawable buildingPinDrawable;
+    Drawable currentLocationPinDrawable;
     PinOverlay buildingPin;
     PinOverlay currentLocationPin;
 
@@ -102,7 +103,7 @@ public class CustomMap extends MapActivity {
 
             currentLocationGeoPoint = new GeoPoint((int) (gpsLat * 1E6), (int) (gpsLong * 1E6));
 
-            Drawable currentLocationPinDrawable = this.getResources().getDrawable(R.drawable.bluepin);
+            currentLocationPinDrawable = this.getResources().getDrawable(R.drawable.bluepin);
             currentLocationPin = new PinOverlay(currentLocationPinDrawable);
 
             OverlayItem overlayitem = new OverlayItem(currentLocationGeoPoint, "", "");
