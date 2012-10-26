@@ -48,11 +48,14 @@ public class StudySpaceListActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sslist);
 
+        this.searchOptions = (SearchOptions) getIntent().getSerializableExtra(
+                "SEARCH_OPTIONS");
         favorites = getSharedPreferences(FAV_PREFERENCES, 0);
 
         ss_list = new ArrayList<StudySpace>(); // List to store StudySpaces
         this.ss_adapter = new StudySpaceListAdapter(this, R.layout.sslistitem,
                 ss_list);
+        ss_adapter.filterSpaces();
         this.setListAdapter(this.ss_adapter); // Adapter to read list and
                                               // display
 
