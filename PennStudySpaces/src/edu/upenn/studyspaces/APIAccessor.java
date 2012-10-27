@@ -1,16 +1,26 @@
 package edu.upenn.studyspaces;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import android.location.Location;
 import android.util.Log;
 
 public class APIAccessor {
 
+    private static final int MAX_CACHE_SIZE = 5000;
     // public static JSONObject availabilities;
+    private static Map<String, Integer> cachedDistanceRequest = new HashMap<String, Integer>();
+    private static final String directionAPIPrefix = "http://maps.googleapis.com/maps/api/directions/json?";
 
     public static ArrayList<StudySpace> getStudySpaces() throws Exception {
 
@@ -99,6 +109,81 @@ public class APIAccessor {
 
         }
         return study_spaces;
+    }
+
+    public static void sortStudySpaceListByWalkingDistance(
+            ArrayList<StudySpace> studySpacesList, Location location) {
+        
+        // flush the cache if needed
+        if (cachedDistanceRequest.size() > MAX_CACHE_SIZE) {
+            cachedDistanceRequest = new HashMap<String, Integer>();
+        }
+
+        //double currentLat = location.getLatitude();
+        double currentLat = 39.95233d;
+        //double currentLong = location.getLongitude();
+        double currentLong = -75.1906d;
+
+        try {
+            for (StudySpace oneStudySpace : studySpacesList) {
+                String requestUrl = directionAPIPrefix + "origin=" + currentLat
+                        + "," + currentLong + "&destination="
+                        + oneStudySpace.getSpaceLatitude() + ","
+                        + oneStudySpace.getSpaceLongitude() + "&mode=walking&sensor=false";
+                Integer cachedDistance = cachedDistanceRequest.get(requestUrl);
+
+                if (cachedDistance == null) {
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(
+                                    new URL(requestUrl).openStream()));
+
+                    StringBuilder recentResponse = new StringBuilder();
+                    String oneLine = reader.readLine();
+                    while (oneLine != null) {
+                        recentResponse.append(oneLine);
+                        oneLine = reader.readLine();
+                    }
+                    boolean allGood = false;
+
+                    // start parsing response to get the distance
+                    JSONObject jsonObj = new JSONObject(
+                            recentResponse.toString());
+                    JSONObject route = jsonObj.getJSONArray("routes")
+                            .getJSONObject(0);
+                    JSONObject leg = route.getJSONArray("legs")
+                            .getJSONObject(0);
+                    int distance = leg.getJSONObject("distance")
+                            .getInt("value");
+                    allGood = true;
+
+                    if (allGood) {
+                        cachedDistanceRequest.put(requestUrl, distance);
+                        oneStudySpace
+                                .setWalkingDistanceToCurrentGPSLocation(distance);
+                    }
+                } else {
+                    oneStudySpace
+                            .setWalkingDistanceToCurrentGPSLocation(cachedDistance);
+                }
+            }
+            
+            Comparator<StudySpace> c = new Comparator<StudySpace>() {
+                @Override
+                public int compare(StudySpace lhs, StudySpace rhs) {
+                    int lhsDistance = lhs.getWalkingDistanceFromGPSLocation();
+                    int rhsDistance = rhs.getWalkingDistanceFromGPSLocation();
+                    if (lhsDistance != -1 && rhsDistance != -1) {
+                        return lhsDistance - rhsDistance;
+                    }
+                    return 0;
+                }
+            };
+
+            Collections.sort(studySpacesList, c);
+
+        } catch (Exception e) {
+            Log.e("BACKGROUND_PROC", "Problem getting walking distance" + e.getMessage());
+        }
     }
 
 }
