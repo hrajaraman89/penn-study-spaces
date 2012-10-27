@@ -65,7 +65,7 @@ public class SearchActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
-        
+
         checkConnection();
 
         search = getSharedPreferences(SEARCH_PREFERENCES, 0);
@@ -512,14 +512,16 @@ public class SearchActivity extends Activity {
 
     // Updates search options then delivers intent
     public void onSearchButtonClick(View view) {
-        putDataInSearchOptionsObject();
-        // Returns to List activity
-        Intent i = new Intent(this, StudySpaceListActivity.class);
-        // Put your searchOption class here
-        i.putExtra("SEARCH_OPTIONS", (Serializable) mSearchOptions);
-        setResult(RESULT_OK, i);
-        // ends this activity
-        startActivity(i);
+        if (checkConnection()) {
+            putDataInSearchOptionsObject();
+            // Returns to List activity
+            Intent i = new Intent(this, StudySpaceListActivity.class);
+            // Put your searchOption class here
+            i.putExtra("SEARCH_OPTIONS", (Serializable) mSearchOptions);
+            setResult(RESULT_OK, i);
+            // ends this activity
+            startActivity(i);
+        }
     }
 
     private void putDataInSearchOptionsObject() {
@@ -605,24 +607,29 @@ public class SearchActivity extends Activity {
         }
         return true;
     }
-    
+
     public void onFavoritesButtonClick(View view) {
-        putDataInSearchOptionsObject();
-        Intent i = new Intent(this, FavoritesActivity.class);
-        i.putExtra("SEARCH_OPTIONS", (Serializable) mSearchOptions);
-        startActivity(i);
+        if (checkConnection()) {
+            putDataInSearchOptionsObject();
+            Intent i = new Intent(this, FavoritesActivity.class);
+            i.putExtra("SEARCH_OPTIONS", (Serializable) mSearchOptions);
+            startActivity(i);
+        }
     }
-    
-    private void checkConnection() {
-    	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-    	NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-    	if (networkInfo == null ||  !networkInfo.isConnected()) {
-    		Context context = getApplicationContext();
-    		Toast toast = Toast.makeText(context, "", Toast.LENGTH_LONG);
-    		toast.setGravity(Gravity.CENTER, 0, 0);
-    		toast.setText("No network connection available.");
-    		toast.show();
-    	}
+
+    private boolean checkConnection() {
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        boolean connection = true;
+        if (networkInfo == null || !networkInfo.isConnected()) {
+            Context context = getApplicationContext();
+            Toast toast = Toast.makeText(context, "", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.setText("No network connection available.");
+            toast.show();
+            connection = false;
+        }
+        return connection;
     }
 
 }
