@@ -37,8 +37,8 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
-            LayoutInflater vi = (LayoutInflater) getContext()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater vi = (LayoutInflater) getContext().getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(R.layout.sslistitem, null);
         }
         // int index = getRealPosition(position);
@@ -68,8 +68,8 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                     resID = resource.getIdentifier("engiicon", "drawable",
                             context.getPackageName());
                 else if (o.getBuildingType().equals(StudySpace.WHARTON))
-                    resID = resource.getIdentifier("whartonicon",
-                            "drawable", context.getPackageName());
+                    resID = resource.getIdentifier("whartonicon", "drawable",
+                            context.getPackageName());
                 else if (o.getBuildingType().equals(StudySpace.LIBRARIES))
                     resID = resource.getIdentifier("libicon", "drawable",
                             context.getPackageName());
@@ -153,8 +153,7 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                 filtered.remove(i);
                 continue;
             }
-            if (searchOptions.getComputer()
-                    && !filtered.get(i).hasComputer()) {
+            if (searchOptions.getComputer() && !filtered.get(i).hasComputer()) {
                 filtered.remove(i);
                 continue;
             }
@@ -171,16 +170,14 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
         this.list_items = SpaceInfo.sortByRank(filtered);
         this.list_items = filterByPeople(list_items);
         this.list_items = filterByDate(list_items);
-        this.before_search = (ArrayList<StudySpace>) this.list_items
-                .clone();
+        this.before_search = (ArrayList<StudySpace>) this.list_items.clone();
 
         notifyDataSetChanged();
     }
 
     public void searchNames(String query) {
         query = query.toLowerCase();
-        this.list_items = (ArrayList<StudySpace>) this.before_search
-                .clone();
+        this.list_items = (ArrayList<StudySpace>) this.before_search.clone();
         if (!query.equals("")) {
             for (int i = list_items.size() - 1; i >= 0; i--) {
                 StudySpace s = list_items.get(i);
@@ -216,7 +213,7 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                 fav_orig_items.remove(i);
         }
     }
-    
+
     public ArrayList<StudySpace> filterByDate(ArrayList<StudySpace> arr) {
         Date d1 = searchOptions.getStartDate();
         Date d2 = searchOptions.getEndDate();
