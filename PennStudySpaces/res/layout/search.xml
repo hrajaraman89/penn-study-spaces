@@ -21,6 +21,15 @@
                 android:layout_height="wrap_content"
                 android:onClick="onSearchButtonClick"
                 android:text="@string/search_button" />
+
+            <Button
+                android:id="@+id/favoritesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="3"
+                android:onClick="onFavoritesButtonClick"
+                android:text="@string/favorites" />
+
         </TableRow>
     </TableLayout>
 

@@ -606,6 +606,13 @@ public class SearchActivity extends Activity {
         return true;
     }
     
+    public void onFavoritesButtonClick(View view) {
+        putDataInSearchOptionsObject();
+        Intent i = new Intent(this, FavoritesActivity.class);
+        i.putExtra("SEARCH_OPTIONS", (Serializable) mSearchOptions);
+        startActivity(i);
+    }
+    
     private void checkConnection() {
     	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     	NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();

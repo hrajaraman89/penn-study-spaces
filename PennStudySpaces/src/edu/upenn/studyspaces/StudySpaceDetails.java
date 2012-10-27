@@ -26,6 +26,8 @@ public class StudySpaceDetails extends FragmentActivity {
     private Preferences p;
 
     private SharedPreferences favorites;
+    
+    private boolean removedFavorite = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,7 @@ public class StudySpaceDetails extends FragmentActivity {
             Intent i = new Intent();
 
             i.putExtra("PREFERENCES", (Serializable) p);
+            i.putExtra("REMOVED_FAVORITE", removedFavorite);
             setResult(RESULT_OK, i);
             // ends this activity
             finish();
@@ -120,6 +123,7 @@ public class StudySpaceDetails extends FragmentActivity {
         SharedPreferences.Editor editor = favorites.edit();
         editor.putBoolean(o.getBuildingName() + o.getSpaceName(), false);
         editor.commit();
+        removedFavorite = true;
     }
 
     public void onCalClick(View v) {
