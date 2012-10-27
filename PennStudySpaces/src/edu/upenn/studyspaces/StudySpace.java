@@ -27,6 +27,7 @@ public class StudySpace implements Serializable {
     private String spaceName;
     private double latitude;
     private double longitude;
+    private int walkingDistanceFromCurrentGPSLocation = -1; // in meters
     private int number_of_rooms;
     private int max_occupancy;
     private boolean has_whiteboard;
@@ -125,6 +126,10 @@ public class StudySpace implements Serializable {
         return longitude;
     }
 
+    public int getWalkingDistanceFromGPSLocation() {
+        return walkingDistanceFromCurrentGPSLocation;
+    }
+    
     public int getNumberOfRooms() {
         return number_of_rooms;
     }
@@ -259,4 +264,7 @@ public class StudySpace implements Serializable {
         }
     }
 
+    public void setWalkingDistanceToCurrentGPSLocation(int distance) {
+        this.walkingDistanceFromCurrentGPSLocation = distance;
+    }
 }
