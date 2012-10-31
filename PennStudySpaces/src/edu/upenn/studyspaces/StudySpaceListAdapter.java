@@ -1,10 +1,13 @@
 package edu.upenn.studyspaces;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,8 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                                         // favorites is displayed
     private Context context;
     private SearchOptions searchOptions;
+    
+    private Location location; // current GPS location used for sorting
 
     public StudySpaceListAdapter(Context context, int textViewResourceId,
             ArrayList<StudySpace> items, SearchOptions searchOptions) {
@@ -31,6 +36,10 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
         this.fav_orig_items = new ArrayList<StudySpace>();
         this.context = context;
         this.searchOptions = searchOptions;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Override
@@ -166,8 +175,33 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
         }
 
         // this.list_items = filtered;
+        
+        // sort by Euclidean distance
+        if (location != null) {
+            Comparator<StudySpace> comparator = new Comparator<StudySpace>() {
+                @Override
+                public int compare(StudySpace lhs, StudySpace rhs) {
+                    double lhsLatDiff = lhs.getSpaceLatitude() - location.getLatitude();
+                    double lhsLongDiff = lhs.getSpaceLongitude() - location.getLongitude();
+                    double lhsSqDistance = lhsLatDiff * lhsLatDiff + lhsLongDiff * lhsLongDiff;
 
-        this.list_items = SpaceInfo.sortByRank(filtered);
+                    double rhsLatDiff = rhs.getSpaceLatitude() - location.getLatitude();
+                    double rhsLongDiff = rhs.getSpaceLongitude() - location.getLongitude();
+                    double rhsSqDistance = rhsLatDiff * rhsLatDiff + rhsLongDiff * rhsLongDiff;
+
+                    if ( lhsSqDistance - rhsSqDistance > 0) {
+                        return 1;
+                    } else if (lhsSqDistance - rhsSqDistance < 0) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            };
+            Collections.sort(list_items, comparator);
+        } else {
+            this.list_items = SpaceInfo.sortByRank(filtered);
+        }
         this.list_items = filterByPeople(list_items);
         this.list_items = filterByDate(list_items);
         this.before_search = (ArrayList<StudySpace>) this.list_items.clone();

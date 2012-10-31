@@ -5,11 +5,15 @@ import java.util.Date;
 import java.util.Map;
 
 import android.app.ListActivity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -51,10 +55,21 @@ public class StudySpaceListActivity extends ListActivity {
         this.searchOptions = (SearchOptions) getIntent().getSerializableExtra(
                 "SEARCH_OPTIONS");
         favorites = getSharedPreferences(FAV_PREFERENCES, 0);
+        
+        // get current GPS location
+        LocationManager locationManager = (LocationManager) this
+                .getSystemService(Context.LOCATION_SERVICE);
+        Criteria _criteria = new Criteria();
+        String provider = locationManager.getBestProvider(_criteria, true);
+        Location location = null;
+        if (provider != null) {
+            location = locationManager.getLastKnownLocation(provider);
+        }
 
         ss_list = new ArrayList<StudySpace>(); // List to store StudySpaces
-        this.ss_adapter = new StudySpaceListAdapter(this, R.layout.sslistitem,
+        ss_adapter = new StudySpaceListAdapter(this, R.layout.sslistitem,
                 ss_list, searchOptions);
+        ss_adapter.setLocation(location);
         ss_adapter.filterSpaces();
         this.setListAdapter(this.ss_adapter); // Adapter to read list and
                                               // display
