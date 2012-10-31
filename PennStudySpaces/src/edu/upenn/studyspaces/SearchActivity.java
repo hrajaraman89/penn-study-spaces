@@ -5,9 +5,12 @@ import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.app.PendingIntent.CanceledException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -24,6 +27,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.content.Context;
+import android.location.Criteria;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -104,6 +109,22 @@ public class SearchActivity extends Activity {
         setUpPrivate();
 
         updateTimeAndDateDisplays();
+
+        // get GPS location
+        LocationManager locationManager = (LocationManager) this
+                .getSystemService(Context.LOCATION_SERVICE);
+
+        Criteria _criteria = new Criteria();
+        // _criteria.setAccuracy(Criteria.ACCURACY_LOW);
+        PendingIntent _pIntent = PendingIntent.getBroadcast(
+                getApplicationContext(), 0, getIntent(), 0);
+        locationManager.requestSingleUpdate(_criteria, _pIntent);
+        try {
+            _pIntent.send();
+        } catch (CanceledException e) {
+            Log.e("SearchActivity", "Problem sending GPS location update request", e);
+        }
+
 
         // add a click listener to the button
         mPickStartTime.setOnClickListener(new View.OnClickListener() {
