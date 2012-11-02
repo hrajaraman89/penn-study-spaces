@@ -178,26 +178,8 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
         
         // sort by Euclidean distance
         if (location != null) {
-            Comparator<StudySpace> comparator = new Comparator<StudySpace>() {
-                @Override
-                public int compare(StudySpace lhs, StudySpace rhs) {
-                    double lhsLatDiff = lhs.getSpaceLatitude() - location.getLatitude();
-                    double lhsLongDiff = lhs.getSpaceLongitude() - location.getLongitude();
-                    double lhsSqDistance = lhsLatDiff * lhsLatDiff + lhsLongDiff * lhsLongDiff;
-
-                    double rhsLatDiff = rhs.getSpaceLatitude() - location.getLatitude();
-                    double rhsLongDiff = rhs.getSpaceLongitude() - location.getLongitude();
-                    double rhsSqDistance = rhsLatDiff * rhsLatDiff + rhsLongDiff * rhsLongDiff;
-
-                    if ( lhsSqDistance - rhsSqDistance > 0) {
-                        return 1;
-                    } else if (lhsSqDistance - rhsSqDistance < 0) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                }
-            };
+            Comparator<StudySpace> comparator = new StudySpaceDistanceComparator(
+                    location.getLatitude(), location.getLongitude());
             Collections.sort(list_items, comparator);
         } else {
             this.list_items = SpaceInfo.sortByRank(filtered);
@@ -282,5 +264,34 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                 arr.remove(i);
         }
         return arr;
+    }
+
+    public static class StudySpaceDistanceComparator implements Comparator<StudySpace> {
+        double currentLocationLat;
+        double currentLocationLong;
+        
+        public StudySpaceDistanceComparator(double cLat, double cLong) {
+            this.currentLocationLat = cLat;
+            this.currentLocationLong = cLong;
+        }
+        
+        @Override
+        public int compare(StudySpace lhs, StudySpace rhs) {
+            double lhsLatDiff = lhs.getSpaceLatitude() - currentLocationLat;
+            double lhsLongDiff = lhs.getSpaceLongitude() - currentLocationLong;
+            double lhsSqDistance = lhsLatDiff * lhsLatDiff + lhsLongDiff * lhsLongDiff;
+
+            double rhsLatDiff = rhs.getSpaceLatitude() - currentLocationLat;
+            double rhsLongDiff = rhs.getSpaceLongitude() - currentLocationLong;
+            double rhsSqDistance = rhsLatDiff * rhsLatDiff + rhsLongDiff * rhsLongDiff;
+
+            if ( lhsSqDistance - rhsSqDistance > 0) {
+                return 1;
+            } else if (lhsSqDistance - rhsSqDistance < 0) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
     }
 }
