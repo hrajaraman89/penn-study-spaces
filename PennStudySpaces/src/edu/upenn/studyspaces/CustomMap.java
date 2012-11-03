@@ -16,6 +16,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -70,7 +71,11 @@ public class CustomMap extends MapActivity {
         // _criteria.setAccuracy(Criteria.ACCURACY_LOW);
         PendingIntent _pIntent = PendingIntent.getBroadcast(
                 getApplicationContext(), 0, getIntent(), 0);
-        locationManager.requestSingleUpdate(_criteria, _pIntent);
+        try {
+            locationManager.requestSingleUpdate(_criteria, _pIntent);
+        } catch (IllegalArgumentException e) {
+            Log.e("CustomMap", "GPS probably turned off", e);
+        }
 
         String _bestProvider = locationManager.getBestProvider(_criteria, true);
         Location location = locationManager.getLastKnownLocation(_bestProvider);

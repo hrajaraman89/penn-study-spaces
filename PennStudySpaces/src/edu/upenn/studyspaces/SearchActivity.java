@@ -118,7 +118,11 @@ public class SearchActivity extends Activity {
         // _criteria.setAccuracy(Criteria.ACCURACY_LOW);
         PendingIntent _pIntent = PendingIntent.getBroadcast(
                 getApplicationContext(), 0, getIntent(), 0);
-        locationManager.requestSingleUpdate(_criteria, _pIntent);
+        try {
+            locationManager.requestSingleUpdate(_criteria, _pIntent);
+        } catch (IllegalArgumentException e) {
+            Log.e("SearchActivity", "GPS probably turned off", e);
+        }
         try {
             _pIntent.send();
         } catch (CanceledException e) {
