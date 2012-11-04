@@ -1,16 +1,15 @@
 package edu.upenn.studyspaces;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Map;
 
 import android.app.ListActivity;
 import android.app.PendingIntent;
+import android.app.PendingIntent.CanceledException;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -18,13 +17,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -55,11 +51,27 @@ public class StudySpaceListActivity extends ListActivity {
         this.searchOptions = (SearchOptions) getIntent().getSerializableExtra(
                 "SEARCH_OPTIONS");
         favorites = getSharedPreferences(FAV_PREFERENCES, 0);
-        
-        // get current GPS location
+
         LocationManager locationManager = (LocationManager) this
                 .getSystemService(Context.LOCATION_SERVICE);
+
+        // Request update location
         Criteria _criteria = new Criteria();
+        PendingIntent _pIntent = PendingIntent.getBroadcast(
+                getApplicationContext(), 0, getIntent(), 0);
+        try {
+            locationManager.requestSingleUpdate(_criteria, _pIntent);
+        } catch (IllegalArgumentException e) {
+            Log.e("SearchActivity", "GPS probably turned off", e);
+        }
+        try {
+            _pIntent.send();
+        } catch (CanceledException e) {
+            Log.e("SearchActivity", "Problem sending GPS location update request", e);
+        }
+
+        
+        // get current GPS location
         String provider = locationManager.getBestProvider(_criteria, true);
         Location location = null;
         if (provider != null) {
