@@ -4,35 +4,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import junit.framework.TestCase;
-
-import org.junit.Test;
-
 import edu.upenn.studyspaces.APIAccessor;
 import edu.upenn.studyspaces.StudySpace;
 import edu.upenn.studyspaces.StudySpaceListAdapter;
 import edu.upenn.studyspaces.StudySpaceListAdapter.StudySpaceDistanceComparator;
 
-public class StudySpaceDistanceTest extends TestCase  {
-    @Test
+public class StudySpaceDistanceTest extends TestCase {
     public void testStudySpacesDistanceSort() throws Exception {
-        double currentLocationLat =  39.95442;
+        double currentLocationLat = 39.95442;
         double currentLocationLong = -75.19245;
 
-        ArrayList<StudySpace> ssList = APIAccessor.getStudySpaces();
+        ArrayList<StudySpace> ssList = new APIAccessor().getStudySpaces();
         StudySpaceDistanceComparator comparator = new StudySpaceListAdapter.StudySpaceDistanceComparator(
                 currentLocationLat, currentLocationLong);
         Collections.sort(ssList, comparator);
-        
+
         StudySpace prev = null;
-        for(StudySpace one : ssList) {
+        for (StudySpace one : ssList) {
             if (prev == null) {
                 prev = one;
                 continue;
             }
-            double prevDis =
-                    distance(currentLocationLat, currentLocationLong, prev.getSpaceLatitude(), prev.getSpaceLongitude());
-            double currentDis =
-                    distance(currentLocationLat, currentLocationLong, one.getSpaceLatitude(), one.getSpaceLongitude());
+            double prevDis = distance(currentLocationLat, currentLocationLong,
+                    prev.getLatitude(), prev.getLongitude());
+            double currentDis = distance(currentLocationLat,
+                    currentLocationLong, one.getLatitude(), one.getLongitude());
             assertEquals(true, prevDis <= currentDis);
         }
     }

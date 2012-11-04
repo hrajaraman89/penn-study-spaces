@@ -52,13 +52,14 @@ public class CustomMap extends MapActivity {
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
 
-        buildingPinDrawable = this.getResources().getDrawable(R.drawable.pushpin);
+        buildingPinDrawable = this.getResources().getDrawable(
+                R.drawable.pushpin);
         buildingPin = new PinOverlay(buildingPinDrawable);
 
         mc = mapView.getController();
 
-        double longitude = o.getSpaceLongitude();
-        double latitude = o.getSpaceLatitude();
+        double longitude = o.getLongitude();
+        double latitude = o.getLatitude();
         double avgLong = longitude;
         double avgLat = latitude;
 
@@ -106,12 +107,15 @@ public class CustomMap extends MapActivity {
             avgLong += gpsLong;
             avgLong /= 2.0;
 
-            currentLocationGeoPoint = new GeoPoint((int) (gpsLat * 1E6), (int) (gpsLong * 1E6));
+            currentLocationGeoPoint = new GeoPoint((int) (gpsLat * 1E6),
+                    (int) (gpsLong * 1E6));
 
-            currentLocationPinDrawable = this.getResources().getDrawable(R.drawable.bluepin);
+            currentLocationPinDrawable = this.getResources().getDrawable(
+                    R.drawable.bluepin);
             currentLocationPin = new PinOverlay(currentLocationPinDrawable);
 
-            OverlayItem overlayitem = new OverlayItem(currentLocationGeoPoint, "", "");
+            OverlayItem overlayitem = new OverlayItem(currentLocationGeoPoint,
+                    "", "");
             currentLocationPin.addOverlay(overlayitem);
         }
 

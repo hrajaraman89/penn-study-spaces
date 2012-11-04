@@ -50,7 +50,7 @@ public class TabDetails extends Fragment {
         rn.setText(o.getRoomNames());
 
         TextView mo = (TextView) getView().findViewById(R.id.maxoccupancy);
-        mo.setText("Maximum occupancy: " + o.getMaximumOccupancy());
+        mo.setText("Maximum occupancy: " + o.getMaxOccupancy());
 
         TextView pi = (TextView) getView().findViewById(R.id.privacy);
         ImageView private_icon = (ImageView) getView().findViewById(
@@ -109,7 +109,7 @@ public class TabDetails extends Fragment {
         TextView com = (TextView) getView().findViewById(R.id.computer);
         ImageView com_icon = (ImageView) getView().findViewById(
                 R.id.computer_icon);
-        if (o.hasComputer()) {
+        if (o.getHasComputer()) {
             com.setText("This study space has a computer.");
             if (com_icon != null) {
                 Resources resource = getResources();
@@ -130,7 +130,7 @@ public class TabDetails extends Fragment {
         TextView proj = (TextView) getView().findViewById(R.id.projector);
         ImageView proj_icon = (ImageView) getView().findViewById(
                 R.id.projector_icon);
-        if (o.has_big_screen()) {
+        if (o.getHasBigScreen()) {
             proj.setText("This study space has a big screen.");
             if (proj_icon != null) {
                 Resources resource = getResources();

@@ -11,9 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class StudySpace implements Serializable {
-    /**
-	 * 
-	 */
+
     private static final long serialVersionUID = 1L;
 
     // Constants, need to be public
@@ -25,37 +23,128 @@ public class StudySpace implements Serializable {
     // Attributes
     private String buildingName;
     private String spaceName;
+    private String privacy;
+    private String reserveType;
+    private String comments;
+
     private double latitude;
     private double longitude;
+
     private int walkingDistanceFromCurrentGPSLocation = -1; // in meters
-    private int number_of_rooms;
-    private int max_occupancy;
-    private boolean has_whiteboard;
-    private String privacy;
-    private boolean has_computer;
-    private String reserve_type;
-    private boolean has_big_screen;
-    private String comments;
+
+    private int numRooms;
+    private int maxOccupancy;
+
+    private boolean hasWhiteboard;
+    private boolean hasComputer;
+    private boolean hasBigScreen;
+
     private Room[] rooms;
     private String[] foursquare;
 
-    public StudySpace(String name, double lat, double lon, int num_rooms,
-            String b_name, int max_occ, boolean has_wh, String pri,
-            boolean has_comp, String res_type, boolean has_big_s, String comm,
-            Room[] r) {
-        spaceName = name;
-        latitude = lat;
-        longitude = lon;
-        number_of_rooms = num_rooms;
-        buildingName = b_name;
-        max_occupancy = max_occ;
-        has_whiteboard = has_wh;
-        privacy = pri;
-        has_computer = has_comp;
-        reserve_type = res_type;
-        has_big_screen = has_big_s;
-        comments = comm;
-        rooms = r;
+    private String roomNames;
+
+    public StudySpace() {
+
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public StudySpace setLatitude(double latitude) {
+        this.latitude = latitude;
+        return this;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public StudySpace setLongitude(double longitude) {
+        this.longitude = longitude;
+        return this;
+    }
+
+    public int getNumRooms() {
+        return numRooms;
+    }
+
+    public StudySpace setNumRooms(int numRooms) {
+        this.numRooms = numRooms;
+        return this;
+    }
+
+    public int getMaxOccupancy() {
+        return maxOccupancy;
+    }
+
+    public StudySpace setMaxOccupancy(int maxOccupancy) {
+        this.maxOccupancy = maxOccupancy;
+        return this;
+    }
+
+    public boolean getHasWhiteboard() {
+        return hasWhiteboard;
+    }
+
+    public StudySpace setHasWhiteboard(boolean hasWhiteboard) {
+        this.hasWhiteboard = hasWhiteboard;
+        return this;
+    }
+
+    public boolean getHasComputer() {
+        return hasComputer;
+    }
+
+    public StudySpace setHasComputer(boolean hasComputer) {
+        this.hasComputer = hasComputer;
+        return this;
+    }
+
+    public boolean getHasBigScreen() {
+        return hasBigScreen;
+    }
+
+    public StudySpace setHasBigScreen(boolean hasBigScreen) {
+        this.hasBigScreen = hasBigScreen;
+        return this;
+    }
+
+    public String getSpaceName() {
+        return spaceName;
+    }
+
+    public StudySpace setSpaceName(String spaceName) {
+        this.spaceName = spaceName;
+        return this;
+    }
+
+    public String getPrivacy() {
+        return privacy;
+    }
+
+    public StudySpace setPrivacy(String privacy) {
+        this.privacy = privacy;
+        return this;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public StudySpace setComments(String comments) {
+        this.comments = comments;
+        return this;
+    }
+
+    public Room[] getRooms() {
+        return rooms;
+    }
+
+    public StudySpace setRooms(Room[] rooms) {
+        this.rooms = rooms;
+        return this;
     }
 
     public String[] getFoursquare() {
@@ -114,60 +203,35 @@ public class StudySpace implements Serializable {
         }
     }
 
-    public String getSpaceName() {
-        return spaceName;
-    }
-
-    public double getSpaceLatitude() {
-        return latitude;
-    }
-
-    public double getSpaceLongitude() {
-        return longitude;
-    }
-
     public int getWalkingDistanceFromGPSLocation() {
         return walkingDistanceFromCurrentGPSLocation;
     }
-    
-    public int getNumberOfRooms() {
-        return number_of_rooms;
+
+    public StudySpace setWalkingDistanceToCurrentGPSLocation(int distance) {
+        this.walkingDistanceFromCurrentGPSLocation = distance;
+        return this;
     }
 
     public String getBuildingName() {
         return buildingName;
     }
 
-    public int getMaximumOccupancy() {
-        return max_occupancy;
+    public StudySpace setBuildingName(String buildingName) {
+        this.buildingName = buildingName;
+        return this;
     }
 
     public boolean hasWhiteboard() {
-        return has_whiteboard;
-    }
-
-    public String getPrivacy() {
-        return privacy;
-    }
-
-    public boolean hasComputer() {
-        return has_computer;
+        return hasWhiteboard;
     }
 
     public String getReserveType() {
-        return reserve_type;
+        return reserveType;
     }
 
-    public boolean has_big_screen() {
-        return has_big_screen;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public Room[] getRooms() {
-        return rooms;
+    public StudySpace setReserveType(String reserveType) {
+        this.reserveType = reserveType;
+        return this;
     }
 
     // get the list of roomNames as a string
@@ -177,10 +241,16 @@ public class StudySpace implements Serializable {
         if (getSpaceName().equals("GSR"))
             return getGSRNames();
         else {
-            String out = "";
-            for (Room r : getRooms())
-                out = out + r.getRoomName() + " ";
-            return out;
+            if (this.roomNames == null) {
+                StringBuilder builder = new StringBuilder();
+                for (Room room : getRooms()) {
+                    builder.append(room.getRoomName() + " ");
+                }
+
+                this.roomNames = builder.toString();
+            }
+
+            return this.roomNames;
         }
     }
 
@@ -262,9 +332,5 @@ public class StudySpace implements Serializable {
         } else {
             return OTHER;
         }
-    }
-
-    public void setWalkingDistanceToCurrentGPSLocation(int distance) {
-        this.walkingDistanceFromCurrentGPSLocation = distance;
     }
 }

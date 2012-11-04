@@ -25,7 +25,7 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                                         // favorites is displayed
     private Context context;
     private SearchOptions searchOptions;
-    
+
     private Location location; // current GPS location used for sorting
 
     public StudySpaceListAdapter(Context context, int textViewResourceId,
@@ -61,11 +61,11 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                 tt.setText(o.getBuildingName() + " - " + o.getSpaceName());
             }
             if (bt != null) {
-                if (o.getNumberOfRooms() == 1) {
+                if (o.getNumRooms() == 1) {
                     bt.setText(o.getRooms()[0].getRoomName());
                 } else {
                     bt.setText(o.getRooms()[0].getRoomName() + " (and "
-                            + String.valueOf(o.getNumberOfRooms() - 1)
+                            + String.valueOf(o.getNumRooms() - 1)
                             + " others)");
                 }
             }
@@ -99,11 +99,11 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                 wb.setVisibility(View.INVISIBLE);
             else
                 wb.setVisibility(View.VISIBLE);
-            if (comp != null && !o.hasComputer())
+            if (comp != null && !o.getHasComputer())
                 comp.setVisibility(View.INVISIBLE);
             else
                 comp.setVisibility(View.VISIBLE);
-            if (proj != null && !o.has_big_screen())
+            if (proj != null && !o.getHasBigScreen())
                 proj.setVisibility(View.INVISIBLE);
             else
                 proj.setVisibility(View.VISIBLE);
@@ -162,12 +162,12 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                 filtered.remove(i);
                 continue;
             }
-            if (searchOptions.getComputer() && !filtered.get(i).hasComputer()) {
+            if (searchOptions.getComputer() && !filtered.get(i).getHasComputer()) {
                 filtered.remove(i);
                 continue;
             }
             if (searchOptions.getProjector()
-                    && !filtered.get(i).has_big_screen()) {
+                    && !filtered.get(i).getHasBigScreen()) {
                 filtered.remove(i);
                 continue;
             }
@@ -175,14 +175,12 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
         }
 
         // this.list_items = filtered;
-        
+        this.list_items = SpaceInfo.sortByRank(filtered);
         // sort by Euclidean distance
         if (location != null) {
             Comparator<StudySpace> comparator = new StudySpaceDistanceComparator(
                     location.getLatitude(), location.getLongitude());
             Collections.sort(list_items, comparator);
-        } else {
-            this.list_items = SpaceInfo.sortByRank(filtered);
         }
         this.list_items = filterByPeople(list_items);
         this.list_items = filterByDate(list_items);
@@ -259,33 +257,36 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
 
     public ArrayList<StudySpace> filterByPeople(ArrayList<StudySpace> arr) {
         for (int i = arr.size() - 1; i >= 0; i--) {
-            if (arr.get(i).getMaximumOccupancy() < searchOptions
+            if (arr.get(i).getMaxOccupancy() < searchOptions
                     .getNumberOfPeople())
                 arr.remove(i);
         }
         return arr;
     }
 
-    public static class StudySpaceDistanceComparator implements Comparator<StudySpace> {
+    public static class StudySpaceDistanceComparator implements
+            Comparator<StudySpace> {
         double currentLocationLat;
         double currentLocationLong;
-        
+
         public StudySpaceDistanceComparator(double cLat, double cLong) {
             this.currentLocationLat = cLat;
             this.currentLocationLong = cLong;
         }
-        
+
         @Override
         public int compare(StudySpace lhs, StudySpace rhs) {
-            double lhsLatDiff = lhs.getSpaceLatitude() - currentLocationLat;
-            double lhsLongDiff = lhs.getSpaceLongitude() - currentLocationLong;
-            double lhsSqDistance = lhsLatDiff * lhsLatDiff + lhsLongDiff * lhsLongDiff;
+            double lhsLatDiff = lhs.getLatitude() - currentLocationLat;
+            double lhsLongDiff = lhs.getLongitude() - currentLocationLong;
+            double lhsSqDistance = lhsLatDiff * lhsLatDiff + lhsLongDiff
+                    * lhsLongDiff;
 
-            double rhsLatDiff = rhs.getSpaceLatitude() - currentLocationLat;
-            double rhsLongDiff = rhs.getSpaceLongitude() - currentLocationLong;
-            double rhsSqDistance = rhsLatDiff * rhsLatDiff + rhsLongDiff * rhsLongDiff;
+            double rhsLatDiff = rhs.getLatitude() - currentLocationLat;
+            double rhsLongDiff = rhs.getLongitude() - currentLocationLong;
+            double rhsSqDistance = rhsLatDiff * rhsLatDiff + rhsLongDiff
+                    * rhsLongDiff;
 
-            if ( lhsSqDistance - rhsSqDistance > 0) {
+            if (lhsSqDistance - rhsSqDistance > 0) {
                 return 1;
             } else if (lhsSqDistance - rhsSqDistance < 0) {
                 return -1;

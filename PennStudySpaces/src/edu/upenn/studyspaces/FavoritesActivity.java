@@ -6,10 +6,9 @@ import java.util.Map;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -80,7 +79,9 @@ public class FavoritesActivity extends ListActivity {
 
     private void getSpaces() {
         try {
-            ss_list.addAll(APIAccessor.getStudySpaces());
+            ArrayList<StudySpace> studySpaces = ((APIAccessor) getApplication())
+                    .getStudySpaces();
+            ss_list.addAll(studySpaces);
             ss_adapter.updateFavorites(preferences);
             Log.i("ARRAY", "" + ss_list.size());
         } catch (Exception e) {

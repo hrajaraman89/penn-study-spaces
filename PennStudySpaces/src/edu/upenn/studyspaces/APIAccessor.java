@@ -4,111 +4,137 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.location.Location;
+import android.app.Application;
 import android.util.Log;
 
-public class APIAccessor {
+public class APIAccessor extends Application {
 
-    private static final int MAX_CACHE_SIZE = 5000;
-    // public static JSONObject availabilities;
-    private static Map<String, Integer> cachedDistanceRequest = new HashMap<String, Integer>();
-    private static final String directionAPIPrefix = "http://maps.googleapis.com/maps/api/directions/json?";
+    private static final String API_URL = "http://www.pennstudyspaces.com/api?showall=1&format=json";
+    private static final String API_ACCESSOR = "API_ACCESSOR";
+    private static final long REFRESH_INTERVAL = 5 * 1000 * 60; // 5 minutes
+    private long lastAccess;
+    private ArrayList<StudySpace> studySpaces;
 
-    public static ArrayList<StudySpace> getStudySpaces() throws Exception {
+    public APIAccessor() {
+        this.studySpaces = new ArrayList<StudySpace>();
+        lastAccess = 0;
+    }
 
-        String _url = "http://www.pennstudyspaces.com/api?showall=1&format=json";
+    @Override
+    public void onCreate() {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                buildStudySpaces();
+            }
+        };
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new URL(_url).openStream()));
+        Thread buildSpaces = new Thread(runnable);
+        buildSpaces.start();
+    }
 
-        String line = reader.readLine();
+    private void buildStudySpaces() {
 
-        JSONObject json_obj = new JSONObject(line);
+        ArrayList<StudySpace> previousSpaces = this.studySpaces;
+        this.studySpaces = new ArrayList<StudySpace>();
 
-        JSONArray buildings_arr = json_obj.getJSONArray("buildings");
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new URL(API_URL).openStream()));
 
-        ArrayList<StudySpace> study_spaces = new ArrayList<StudySpace>();
+            String line = reader.readLine();
 
-        for (int i = 0; i < buildings_arr.length(); i++) {
+            JSONObject json_obj = new JSONObject(line);
 
-            JSONArray roomkinds_arr = buildings_arr.getJSONObject(i)
-                    .getJSONArray("roomkinds");
+            JSONArray buildings = json_obj.getJSONArray("buildings");
 
-            for (int j = 0; j < roomkinds_arr.length(); j++) {
+            createStudySpacesFromBuildings(buildings);
 
-                JSONArray t = roomkinds_arr.getJSONObject(j).getJSONArray(
-                        "rooms");
-                Room[] rooms = new Room[t.length()];
+            lastAccess = System.currentTimeMillis();
 
-                for (int k = 0; k < t.length(); k++) {
-                    /*
-                     * System.out.println(t.getJSONObject(k).getInt("id"));
-                     * System.out.println(t.getJSONObject(k).getString("name"));
-                     * System
-                     * .out.println(roomkinds_arr.getJSONObject(j).getString
-                     * ("name"));
-                     * System.out.println(t.getJSONObject(k).getJSONObject
-                     * ("availabilities").getJSONArray("2012-03-27"));
-                     * System.out.println(); availabilities =
-                     * t.getJSONObject(k).getJSONObject("availabilities");
-                     * System.out.println(availableNow());
-                     * //System.out.println(availabilities); //JSONArray ja =
-                     * availabilities.getJSONArray("2012-04-08"); if(ja.get(1)
-                     * == null) {
-                     * System.out.println("No JSONArray at index 1!"); } else {
-                     * System.out.println(ja.get(1)); }
-                     */
-                    Room temp = new Room(t.getJSONObject(k).getInt("id"), t
-                            .getJSONObject(k).getString("name"), t
-                            .getJSONObject(k).getJSONObject("availabilities"));
-                    rooms[k] = temp;
-                    /*
-                     * System.out.println(rooms[k].getRoomName());
-                     * System.out.println(rooms[k].getID());
-                     * System.out.println();
-                     */
-                }
+        } catch (Exception e) {
+            this.studySpaces = previousSpaces;
+            Log.e(API_ACCESSOR, e.getMessage());
+        }
+    }
 
-                /*
-                 * System.out.println(roomkinds_arr.getJSONObject(j).get(
-                 * "max_occupancy")); System.out.println(t.length());
-                 * System.out.println(roomkinds_arr.getJSONObject(j));
-                 * System.out
-                 * .println(roomkinds_arr.getJSONObject(j).getString("name"));
-                 * System
-                 * .out.println(buildings_arr.getJSONObject(i).getString("name"
-                 * ));
-                 */
+    private void createStudySpacesFromBuildings(JSONArray buildings)
+            throws JSONException {
 
-                StudySpace temp = new StudySpace(roomkinds_arr.getJSONObject(j)
-                        .getString("name"), buildings_arr.getJSONObject(i)
-                        .getDouble("latitude"), buildings_arr.getJSONObject(i)
-                        .getDouble("longitude"), t.length(), buildings_arr
-                        .getJSONObject(i).getString("name"), roomkinds_arr
-                        .getJSONObject(j).getInt("max_occupancy"),
-                        roomkinds_arr.getJSONObject(j).getBoolean(
-                                "has_whiteboard"), roomkinds_arr.getJSONObject(
-                                j).getString("privacy"), roomkinds_arr
-                                .getJSONObject(j).getBoolean("has_computer"),
-                        roomkinds_arr.getJSONObject(j)
-                                .getString("reserve_type"), roomkinds_arr
-                                .getJSONObject(j).getBoolean("has_big_screen"),
-                        roomkinds_arr.getJSONObject(j).getString("comments"),
-                        rooms);
+        JSONObject currentBuilding;
 
-                study_spaces.add(temp);
+        for (int i = 0; i < buildings.length(); i++) {
+            int lastIndex = this.studySpaces.size();
+
+            currentBuilding = buildings.getJSONObject(i);
+
+            double latitude = currentBuilding.getDouble("latitude");
+            double longitude = currentBuilding.getDouble("longitude");
+            String buildingName = currentBuilding.getString("name");
+
+            createStudySpacesFromRoomKinds(currentBuilding
+                    .getJSONArray("roomkinds"));
+
+            StudySpace currentStudySpace;
+            while (lastIndex < this.studySpaces.size()) {
+                currentStudySpace = this.studySpaces.get(lastIndex);
+                currentStudySpace.setLatitude(latitude).setLongitude(longitude)
+                        .setBuildingName(buildingName);
+
+                ++lastIndex;
+            }
+        }
+    }
+
+    private void createStudySpacesFromRoomKinds(JSONArray roomKinds)
+            throws JSONException {
+
+        JSONObject currentRoomKind;
+        JSONArray currentRooms;
+
+        for (int j = 0; j < roomKinds.length(); j++) {
+
+            currentRoomKind = roomKinds.getJSONObject(j);
+            currentRooms = currentRoomKind.getJSONArray("rooms");
+            Room[] rooms = new Room[currentRooms.length()];
+
+            for (int roomIndex = 0; roomIndex < rooms.length; roomIndex++) {
+                rooms[roomIndex] = createRoomFromJSONObject(currentRooms
+                        .getJSONObject(roomIndex));
             }
 
+            StudySpace temp = new StudySpace()
+                    .setSpaceName(currentRoomKind.getString("name"))
+                    .setMaxOccupancy(currentRoomKind.getInt("max_occupancy"))
+                    .setHasWhiteboard(
+                            currentRoomKind.getBoolean("has_whiteboard"))
+                    .setPrivacy(currentRoomKind.getString("privacy"))
+                    .setHasComputer(currentRoomKind.getBoolean("has_computer"))
+                    .setReserveType(currentRoomKind.getString("reserve_type"))
+                    .setHasBigScreen(
+                            currentRoomKind.getBoolean("has_big_screen"))
+                    .setComments(currentRoomKind.getString("comments"))
+                    .setNumRooms(currentRooms.length()).setRooms(rooms);
+
+            studySpaces.add(temp);
         }
-        return study_spaces;
+    }
+
+    private Room createRoomFromJSONObject(JSONObject roomJSON)
+            throws JSONException {
+        return new Room(roomJSON.getInt("id"), roomJSON.getString("name"),
+                roomJSON.getJSONObject("availabilities"));
+    }
+
+    public ArrayList<StudySpace> getStudySpaces() {
+        if (System.currentTimeMillis() - lastAccess > REFRESH_INTERVAL) {
+            this.buildStudySpaces();
+        }
+        return this.studySpaces;
     }
 
 }

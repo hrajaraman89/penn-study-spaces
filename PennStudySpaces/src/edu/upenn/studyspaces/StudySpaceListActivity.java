@@ -67,10 +67,10 @@ public class StudySpaceListActivity extends ListActivity {
         try {
             _pIntent.send();
         } catch (CanceledException e) {
-            Log.e("SearchActivity", "Problem sending GPS location update request", e);
+            Log.e("SearchActivity",
+                    "Problem sending GPS location update request", e);
         }
 
-        
         // get current GPS location
         String provider = locationManager.getBestProvider(_criteria, true);
         Location location = null;
@@ -189,9 +189,12 @@ public class StudySpaceListActivity extends ListActivity {
 
     private void getSpaces() {
         try {
-            ss_list.addAll(APIAccessor.getStudySpaces());
+            ArrayList<StudySpace> studySpaces = ((APIAccessor) getApplication())
+                    .getStudySpaces();
+            ss_list.addAll(studySpaces);
             ss_adapter.updateFavorites(preferences);
-            //Thread.sleep(2000); // appears to load for 2 seconds FIXME: Why is this needed?
+            // Thread.sleep(2000); // appears to load for 2 seconds FIXME: Why
+            // is this needed?
             Log.i("ARRAY", "" + ss_list.size());
         } catch (Exception e) {
             Log.e("BACKGROUND_PROC", "Something went wrong!");
@@ -217,7 +220,6 @@ public class StudySpaceListActivity extends ListActivity {
         // Start up the search options screen
         finish();
     }
-    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
