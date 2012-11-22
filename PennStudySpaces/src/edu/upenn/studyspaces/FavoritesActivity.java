@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class FavoritesActivity extends ListActivity {
     private ProgressDialog ss_ProgressDialog = null;
@@ -111,6 +112,22 @@ public class FavoritesActivity extends ListActivity {
             startActivity(refresh);
 
             this.finish();
+        }
+    }
+
+    public void onMapClick(View v) {
+        Intent intent = new Intent(this, CustomMap.class);
+
+        int size = ss_adapter.getCount();
+        if (size > 0) {
+            intent.putExtra(CustomMap.LIST_SIZE, size);
+            for (int i = 0; i < size; i++) {
+                intent.putExtra(CustomMap.STUDYSPACE + i, ss_adapter.getItem(i));
+            }
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "There are no favorites", Toast.LENGTH_LONG)
+                    .show();
         }
     }
 

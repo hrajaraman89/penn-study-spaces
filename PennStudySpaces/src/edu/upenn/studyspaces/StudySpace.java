@@ -318,16 +318,16 @@ public class StudySpace implements Serializable {
 
     public String getBuildingType() {
 
-        if (buildingName.equals("Towne Building")
-                || buildingName.equals("Levine Hall")
-                || buildingName.equals("Skirkanich Hall")) {
+        if ("Towne Building".equals(buildingName)
+                || "Levine Hall".equals(buildingName)
+                || "Skirkanich Hall".equals(buildingName)) {
             return ENGINEERING;
-        } else if (buildingName.equals("Jon M. Huntsman Hall")) {
+        } else if ("Jon M. Huntsman Hall".equals(buildingName)) {
             return WHARTON;
-        } else if (buildingName.equals("Van Pelt Library")
-                || buildingName.equals("Biomedical Library")
-                || buildingName.equals("Lippincott Library")
-                || buildingName.equals("Museum Library")) {
+        } else if ("Van Pelt Library".equals(buildingName)
+                || "Biomedical Library".equals(buildingName)
+                || "Lippincott Library".equals(buildingName)
+                || "Museum Library".equals(buildingName)) {
             return LIBRARIES;
         } else {
             return OTHER;

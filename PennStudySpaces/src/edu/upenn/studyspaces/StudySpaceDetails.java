@@ -4,19 +4,15 @@ import java.io.Serializable;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 public class StudySpaceDetails extends FragmentActivity {
 
@@ -88,7 +84,9 @@ public class StudySpaceDetails extends FragmentActivity {
 
     public void onMapClick(View v) {
         Intent i = new Intent(this, CustomMap.class);
-        i.putExtra("STUDYSPACE", o);
+
+        i.putExtra(CustomMap.LIST_SIZE, 1);
+        i.putExtra(CustomMap.STUDYSPACE + 0, o);
         startActivity(i);
     }
 

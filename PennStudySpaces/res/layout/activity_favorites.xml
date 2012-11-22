@@ -9,17 +9,29 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="234dp"
+            android:layout_height="45dp"
+            android:background="@color/lightblue"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/favorites"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
         <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="45dp"
-                android:background="@color/lightblue"
+                android:background="@color/yellow"
                 android:clickable="true"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="@string/favorites"
+                android:text="@string/map"
                 android:textColor="@color/black"
+                android:onClick="onMapClick"
                 android:textSize="20sp" />
-        
     </LinearLayout>
 
     <ListView

@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class StudySpaceListActivity extends ListActivity {
 
@@ -214,6 +215,23 @@ public class StudySpaceListActivity extends ListActivity {
             ss_adapter.allToFav();
         }
 
+    }
+
+    public void onMapClick(View v) {
+        Intent intent = new Intent(this, CustomMap.class);
+
+        int size = ss_adapter.getCount();
+
+        if (size > 0) {
+            intent.putExtra(CustomMap.LIST_SIZE, size);
+            for (int i = 0; i < size; i++) {
+                intent.putExtra(CustomMap.STUDYSPACE + i, ss_adapter.getItem(i));
+            }
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "There are no search results",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onFilterClick(View view) {
