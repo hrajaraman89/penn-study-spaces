@@ -22,7 +22,7 @@ public class StudySpaceDetails extends FragmentActivity {
     private Preferences p;
 
     private SharedPreferences favorites;
-    
+
     private boolean removedFavorite = false;
 
     @Override
@@ -49,7 +49,7 @@ public class StudySpaceDetails extends FragmentActivity {
     }
 
     public void onShareClick(View v) {
-
+        tabdetails.onShareClick(v);
     }
 
     public void onDetailsClick(View v) {

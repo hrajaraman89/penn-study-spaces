@@ -10,10 +10,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+import edu.upenn.studyspaces.utilities.ReservationNotifier;
 
 public class TabDetails extends Fragment {
 
@@ -21,6 +20,7 @@ public class TabDetails extends Fragment {
     private Preferences p;
     private View fav;
     private View unfav;
+    private ReservationNotifier notifier;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,6 +32,9 @@ public class TabDetails extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        notifier = new ReservationNotifier();
+
         Intent i = getActivity().getIntent();
         o = (StudySpace) i.getSerializableExtra("STUDYSPACE");
         p = (Preferences) i.getSerializableExtra("PREFERENCES");
@@ -43,10 +46,6 @@ public class TabDetails extends Fragment {
         rt.setText(o.getSpaceName());
 
         TextView rn = (TextView) getView().findViewById(R.id.roomnumbers);
-        /*
-         * Room[] rooms = o.getRooms(); String room_string=""; for (int j =0;
-         * j<rooms.length;j++){ room_string += rooms[j].getRoomName()+" "; }
-         */
         rn.setText(o.getRoomNames());
 
         TextView mo = (TextView) getView().findViewById(R.id.maxoccupancy);
@@ -55,6 +54,7 @@ public class TabDetails extends Fragment {
         TextView pi = (TextView) getView().findViewById(R.id.privacy);
         ImageView private_icon = (ImageView) getView().findViewById(
                 R.id.private_icon);
+
         if (o.getPrivacy().equals("S")) {
             pi.setText("This study space is a common Space");
             if (private_icon != null) {
@@ -219,55 +219,23 @@ public class TabDetails extends Fragment {
         return intent;
     }
 
-    public Intent getTextIntent(View v) {
-        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-        try {
-
-            // Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-            // For now
-            sendIntent.putExtra(
-                    "sms_body",
-                    "PennStudySpaces Reservation confirmed. Details - "
-                            + o.getBuildingName() + " - "
-                            + o.getRooms()[0].getRoomName() + "\nTime: ");
-            sendIntent.setType("vnd.android-dir/mms-sms");
-        } catch (Exception e) {
-            Toast.makeText(v.getContext(),
-                    "SMS faild, please try again later!", Toast.LENGTH_LONG)
-                    .show();
-            e.printStackTrace();
-        }
-        return sendIntent;
-    }
-
     public void onReserveClick(View v) {
         Intent k = getReserveIntent(v);
-
-        Intent calIntent = getCalIntent(v);
-
-        Intent sendIntent = getTextIntent(v);
-
-        CheckBox text = (CheckBox) getView().findViewById(R.id.resTextCheckBox);
-        if (text != null && text.isChecked())
-            startActivity(sendIntent);
-        CheckBox calBox = (CheckBox) getView().findViewById(R.id.calCheckBox);
-        if (calBox != null && calBox.isChecked())
-            startActivity(calIntent);
         if (k != null)
             startActivity(k);
 
     }
 
     public void onCalClick(View v) {
-
         Intent calIntent = getCalIntent(v);
-
-        Intent sendIntent = getTextIntent(v);
-
-        CheckBox text = (CheckBox) getView().findViewById(R.id.calTextCheckBox);
-        if (text != null && text.isChecked())
-            startActivity(sendIntent);
         startActivity(calIntent);
+    }
 
+    public void onShareClick(View v) {
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        end.add(Calendar.HOUR, 1);
+
+        startActivity(notifier.getSharingIntent(start, end, o));
     }
 }

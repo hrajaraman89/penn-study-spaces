@@ -57,7 +57,7 @@
                         android:id="@+id/private_icon"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:padding="5dp"/>
+                        android:padding="5dp" />
 
                     <TextView
                         android:id="@+id/privacy"
@@ -111,7 +111,7 @@
                         android:id="@+id/projector_icon"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:padding="5dp"/>
+                        android:padding="5dp" />
 
                     <TextView
                         android:id="@+id/projector"
@@ -127,15 +127,16 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black" />
         </LinearLayout>
-		<TextView
-		    android:id="@+id/availablenow"
-		    android:layout_width="fill_parent"
-		    android:gravity="center"
-		    android:layout_height="wrap_content"
-		    android:text="AVAILABLE NOW"
-		    android:textSize="30sp"
-		    android:textColor="@color/lightblue"
-		    />
+
+        <TextView
+            android:id="@+id/availablenow"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="AVAILABLE NOW"
+            android:textColor="@color/lightblue"
+            android:textSize="30sp" />
+
         <TextView
             android:id="@+id/favorite"
             android:layout_width="300dp"
@@ -204,13 +205,6 @@
                 android:text="@string/add_calendar"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
-
-            <CheckBox
-                android:id="@+id/calTextCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/add_text"
-                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
@@ -233,27 +227,17 @@
                 android:text="@string/add_reserve"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <CheckBox
-                    android:id="@+id/calCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_calendar"
-                    android:textColor="@color/black" />
-
-                <CheckBox
-                    android:id="@+id/resTextCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_text"
-                    android:textColor="@color/black" />
-            </LinearLayout>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/shareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:text="@string/add_share_text"
+            android:textColor="@color/black"
+            android:onClick="onShareClick" />
     </LinearLayout>
 
 </ScrollView>
