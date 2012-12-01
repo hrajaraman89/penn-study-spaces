@@ -23,7 +23,7 @@ public class StudySpaceDetails extends FragmentActivity {
 
     private SharedPreferences favorites;
 
-    private boolean removedFavorite = false;
+    protected boolean removedFavorite = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,24 +104,6 @@ public class StudySpaceDetails extends FragmentActivity {
             finish();
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-    public void onFavClick(View v) {
-        p.addFavorites(o.getBuildingName() + o.getSpaceName());
-        tabdetails.onFavClick(v);
-
-        SharedPreferences.Editor editor = favorites.edit();
-        editor.putBoolean(o.getBuildingName() + o.getSpaceName(), true);
-        editor.commit();
-    }
-
-    public void onRemoveFavClick(View v) {
-        p.removeFavorites(o.getBuildingName() + o.getSpaceName());
-        tabdetails.onRemoveFavClick(v);
-        SharedPreferences.Editor editor = favorites.edit();
-        editor.putBoolean(o.getBuildingName() + o.getSpaceName(), false);
-        editor.commit();
-        removedFavorite = true;
     }
 
     public void onCalClick(View v) {

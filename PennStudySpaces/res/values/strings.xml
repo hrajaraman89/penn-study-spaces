@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">Penn StudySpaces</string>
+    <string name="search">Search</string>
+    <string name="search_results">Search Results</string>
+    <string name="space_details">Details</string>
     <string name="main_no_items">No rooms available</string>
     <string name="no_favorites">No favorites added</string>
     <string name="search_button">Search</string>
@@ -22,5 +25,6 @@
     <string name="add_share_text">Share</string>
     <string name="add_text">Notify friends</string>
     <string name="find_now">Find now!</string>
-
+    <string name="menu_settings">Settings</string>
+    <string name="criteria">PREFERENCES</string>
 </resources>

@@ -22,7 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,13 +36,11 @@ public class StudySpaceListActivity extends ListActivity {
     public static final int ACTIVITY_ViewSpaceDetails = 1;
     public static final int ACTIVITY_SearchActivity = 2;
     private SearchOptions searchOptions; // create a default searchoption later
-    private boolean favSelected = false;
     private Preferences preferences;
 
     private SharedPreferences favorites;
     static final String FAV_PREFERENCES = "favoritePreferences";
 
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,53 +76,40 @@ public class StudySpaceListActivity extends ListActivity {
             location = locationManager.getLastKnownLocation(provider);
         }
 
-        ss_list = new ArrayList<StudySpace>(); // List to store StudySpaces
-        ss_adapter = new StudySpaceListAdapter(this, R.layout.sslistitem,
-                ss_list, searchOptions);
-        ss_adapter.setLocation(location);
-        ss_adapter.filterSpaces();
-        this.setListAdapter(this.ss_adapter); // Adapter to read list and
-                                              // display
+        try {
+            ss_list = new ArrayList<StudySpace>(); // List to store StudySpaces
+            ss_adapter = new StudySpaceListAdapter(this, R.layout.sslistitem,
+                    ss_list, searchOptions);
+            ss_adapter.setLocation(location);
+            ss_adapter.filterSpaces();
+            this.setListAdapter(this.ss_adapter); // Adapter to read list and
+                                                  // display
 
-        Map<String, ?> items = favorites.getAll();
-        preferences = new Preferences(); // Change this when bundle is
-                                         // implemented.
-        for (String s : items.keySet()) {
-            // boolean fav = favorites.getBoolean(s, false);
-            if (Boolean.parseBoolean(items.get(s).toString())) {
-                preferences.addFavorites(s);
+            Map<String, ?> items = favorites.getAll();
+            preferences = new Preferences(); // Change this when bundle is
+                                             // implemented.
+            for (String s : items.keySet()) {
+                // boolean fav = favorites.getBoolean(s, false);
+                if (Boolean.parseBoolean(items.get(s).toString())) {
+                    preferences.addFavorites(s);
+                }
             }
+
+            viewAvailableSpaces = new Runnable() {
+                public void run() {
+                    getSpaces(); // retrieves list of study spaces
+                }
+            };
+            Thread thread = new Thread(null, viewAvailableSpaces, "ThreadName"); // change
+                                                                                 // name?
+            thread.start();
+            ss_ProgressDialog = ProgressDialog.show(
+                    StudySpaceListActivity.this, null, "Retrieving data ...",
+                    true);
+        } catch (Exception e) {
+            Log.e("StudySpaceListActivity onCreate:", e.toString());
         }
 
-        viewAvailableSpaces = new Runnable() {
-            public void run() {
-                getSpaces(); // retrieves list of study spaces
-            }
-        };
-        Thread thread = new Thread(null, viewAvailableSpaces, "ThreadName"); // change
-                                                                             // name?
-        thread.start();
-        ss_ProgressDialog = ProgressDialog.show(StudySpaceListActivity.this,
-                "Please wait...", "Retrieving data ...", true);
-
-        /*
-         * engiBox.setChecked(true); engiBox.setOnCheckedChangeListener(new
-         * CompoundButton.OnCheckedChangeListener() { public void
-         * onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-         * ss_adapter.filterSpaces(); } }); whartonBox.setChecked(true);
-         * whartonBox .setOnCheckedChangeListener(new
-         * CompoundButton.OnCheckedChangeListener() { public void
-         * onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-         * ss_adapter.filterSpaces(); } }); libBox.setChecked(true);
-         * libBox.setOnCheckedChangeListener(new
-         * CompoundButton.OnCheckedChangeListener() { public void
-         * onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-         * ss_adapter.filterSpaces(); } }); otherBox.setChecked(true);
-         * otherBox.setOnCheckedChangeListener(new
-         * CompoundButton.OnCheckedChangeListener() { public void
-         * onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-         * ss_adapter.filterSpaces(); } });
-         */
         final TextView search = (EditText) findViewById(R.id.search);
         search.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -145,10 +129,7 @@ public class StudySpaceListActivity extends ListActivity {
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) { // click
-        // String item = ((StudySpace)
-        // getListAdapter().getItem(position)).getSpaceName();
-        // Toast.makeText(this, item + " selected", Toast.LENGTH_SHORT).show();
+    protected void onListItemClick(ListView l, View v, int position, long id) {
         Intent i = new Intent(this, StudySpaceDetails.class);
         i.putExtra("STUDYSPACE", (StudySpace) getListAdapter()
                 .getItem(position));
@@ -164,10 +145,6 @@ public class StudySpaceListActivity extends ListActivity {
         case ACTIVITY_SearchActivity:
             searchOptions = (SearchOptions) intent
                     .getSerializableExtra("SEARCH_OPTIONS");
-            favSelected = false;
-            ImageView image = (ImageView) this
-                    .findViewById(R.id.favorite_button);
-            image.setImageResource(R.color.yellow);
             ss_adapter.filterSpaces();
             ss_adapter.updateFavorites(preferences);
             break;
@@ -194,27 +171,11 @@ public class StudySpaceListActivity extends ListActivity {
                     .getStudySpaces();
             ss_list.addAll(studySpaces);
             ss_adapter.updateFavorites(preferences);
-            // Thread.sleep(2000); // appears to load for 2 seconds FIXME: Why
-            // is this needed?
             Log.i("ARRAY", "" + ss_list.size());
         } catch (Exception e) {
             Log.e("BACKGROUND_PROC", "Something went wrong!");
         }
         runOnUiThread(returnRes);
-    }
-
-    public void onFavClick(View v) {
-        ImageView image = (ImageView) this.findViewById(R.id.favorite_button);
-        if (favSelected) {
-            favSelected = false;
-            image.setImageResource(R.color.yellow);
-            ss_adapter.favToAll();
-        } else {
-            favSelected = true;
-            image.setImageResource(R.color.lightblue);
-            ss_adapter.allToFav();
-        }
-
     }
 
     public void onMapClick(View v) {
@@ -232,11 +193,6 @@ public class StudySpaceListActivity extends ListActivity {
             Toast.makeText(this, "There are no search results",
                     Toast.LENGTH_LONG).show();
         }
-    }
-
-    public void onFilterClick(View view) {
-        // Start up the search options screen
-        finish();
     }
 
     @Override

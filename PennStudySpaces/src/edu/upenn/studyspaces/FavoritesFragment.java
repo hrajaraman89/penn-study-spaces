@@ -1,28 +1,27 @@
 package edu.upenn.studyspaces;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class FavoritesActivity extends ListActivity {
+public class FavoritesFragment extends ListFragment {
     private ProgressDialog ss_ProgressDialog = null;
     private ArrayList<StudySpace> ss_list = null; // List containing available
                                                   // rooms
     private StudySpaceListAdapter ss_adapter; // Adapter to format list items
-    private SearchOptions searchOptions;
     private Preferences preferences;
 
     private SharedPreferences favorites;
@@ -31,17 +30,37 @@ public class FavoritesActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorites);
+    }
 
-        this.searchOptions = (SearchOptions) getIntent().getSerializableExtra(
-                "SEARCH_OPTIONS");
-        favorites = getSharedPreferences(
+    private Runnable returnRes = new Runnable() {
+        public void run() {
+            ss_ProgressDialog.dismiss();
+            ss_adapter.notifyDataSetChanged();
+            ss_adapter.allToFav();
+        }
+    };
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        LinearLayout layout = (LinearLayout) inflater.inflate(
+                R.layout.activity_favorites, container, false);
+
+        return layout;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        favorites = getActivity().getSharedPreferences(
                 StudySpaceListActivity.FAV_PREFERENCES, 0);
 
         ss_list = new ArrayList<StudySpace>(); // List to store StudySpaces
-        this.ss_adapter = new StudySpaceListAdapter(this, R.layout.sslistitem,
-                ss_list, searchOptions);
-        ss_adapter.filterSpaces();
+        this.ss_adapter = new StudySpaceListAdapter(getActivity()
+                .getApplicationContext(), R.layout.sslistitem, ss_list, null);
+
         this.setListAdapter(this.ss_adapter); // Adapter to read list and
                                               // display
 
@@ -54,7 +73,7 @@ public class FavoritesActivity extends ListActivity {
                 preferences.addFavorites(s);
             }
         }
-
+        ss_adapter.allToFav();
         viewAvailableSpaces = new Runnable() {
             public void run() {
                 getSpaces(); // retrieves list of study spaces
@@ -63,37 +82,28 @@ public class FavoritesActivity extends ListActivity {
 
         Thread thread = new Thread(null, viewAvailableSpaces, "FavoritesThread");
         thread.start();
-        ss_ProgressDialog = ProgressDialog.show(FavoritesActivity.this,
-                "Please wait...", "Retrieving data ...", true);
+        ss_ProgressDialog = ProgressDialog.show(getActivity(), null,
+                "Retrieving data ...", true);
         ss_ProgressDialog.setCancelable(true);
     }
 
-    private Runnable returnRes = new Runnable() {
-        public void run() {
-            ss_ProgressDialog.dismiss();
-            ss_adapter.notifyDataSetChanged();
-            if (searchOptions != null)
-                ss_adapter.filterSpaces();
-            ss_adapter.allToFav();
-        }
-    };
-
     private void getSpaces() {
         try {
-            ArrayList<StudySpace> studySpaces = ((APIAccessor) getApplication())
-                    .getStudySpaces();
+            ArrayList<StudySpace> studySpaces = ((APIAccessor) getActivity()
+                    .getApplication()).getStudySpaces();
             ss_list.addAll(studySpaces);
             ss_adapter.updateFavorites(preferences);
             Log.i("ARRAY", "" + ss_list.size());
         } catch (Exception e) {
             Log.e("BACKGROUND_PROC", "Something went wrong!");
         }
-        runOnUiThread(returnRes);
+        if (getActivity() != null)
+            getActivity().runOnUiThread(returnRes);
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        Intent i = new Intent(this, StudySpaceDetails.class);
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Intent i = new Intent(getActivity(), StudySpaceDetails.class);
         i.putExtra("STUDYSPACE", (StudySpace) getListAdapter()
                 .getItem(position));
         i.putExtra("PREFERENCES", preferences);
@@ -102,21 +112,20 @@ public class FavoritesActivity extends ListActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-            Intent intent) {
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
         if (intent.getBooleanExtra("REMOVED_FAVORITE", false)) {
-            Intent refresh = new Intent(this, FavoritesActivity.class);
-            refresh.putExtra("SEARCH_OPTIONS", (Serializable) searchOptions);
+            Intent refresh = new Intent(getActivity(), MainActivity.class);
+            refresh.putExtra("FAVORITES", true);
             startActivity(refresh);
 
-            this.finish();
+            getActivity().finish();
         }
     }
 
     public void onMapClick(View v) {
-        Intent intent = new Intent(this, CustomMap.class);
+        Intent intent = new Intent(getActivity(), CustomMap.class);
 
         int size = ss_adapter.getCount();
         if (size > 0) {
@@ -126,29 +135,22 @@ public class FavoritesActivity extends ListActivity {
             }
             startActivity(intent);
         } else {
-            Toast.makeText(this, "There are no favorites", Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(getActivity(), "There are no favorites",
+                    Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.meme:
-            startActivity(new Intent(this, Meme.class));
+            startActivity(new Intent(getActivity(), Meme.class));
             break;
         case R.id.about:
-            startActivity(new Intent(this, About.class));
+            startActivity(new Intent(getActivity(), About.class));
             break;
         case R.id.help:
-            startActivity(new Intent(this, Help.class));
+            startActivity(new Intent(getActivity(), Help.class));
             break;
         }
         return true;

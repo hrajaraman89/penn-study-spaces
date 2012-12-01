@@ -3,6 +3,7 @@ package edu.upenn.studyspaces;
 import java.util.Calendar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import edu.upenn.studyspaces.utilities.ReservationNotifier;
@@ -18,9 +21,9 @@ public class TabDetails extends Fragment {
 
     private StudySpace o;
     private Preferences p;
-    private View fav;
-    private View unfav;
     private ReservationNotifier notifier;
+    private CheckBox favorite;
+    private SharedPreferences favorites;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +41,9 @@ public class TabDetails extends Fragment {
         Intent i = getActivity().getIntent();
         o = (StudySpace) i.getSerializableExtra("STUDYSPACE");
         p = (Preferences) i.getSerializableExtra("PREFERENCES");
+
+        favorites = getActivity().getSharedPreferences(
+                StudySpaceListActivity.FAV_PREFERENCES, 0);
 
         TextView tt = (TextView) getView().findViewById(R.id.spacename);
         tt.setText(o.getBuildingName());
@@ -148,15 +154,40 @@ public class TabDetails extends Fragment {
             }
         }
 
-        fav = getView().findViewById(R.id.favorite);
-        unfav = getView().findViewById(R.id.unfavorite);
+        favorite = (CheckBox) getView().findViewById(R.id.favoriteCheckBox);
+        favorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                    boolean isChecked) {
+                SharedPreferences.Editor editor = favorites.edit();
+
+                if (isChecked) {
+                    p.addFavorites(o.getBuildingName() + o.getSpaceName()
+                            + o.getRoomNames());
+
+                    editor.putBoolean(o.getBuildingName() + o.getSpaceName()
+                            + o.getRoomNames(), true);
+                    ((StudySpaceDetails) getActivity()).removedFavorite = false;
+                } else {
+                    p.removeFavorites(o.getBuildingName() + o.getSpaceName()
+                            + o.getRoomNames());
+
+                    editor.putBoolean(o.getBuildingName() + o.getSpaceName()
+                            + o.getRoomNames(), false);
+                    ((StudySpaceDetails) getActivity()).removedFavorite = true;
+                }
+                editor.commit();
+
+            }
+        });
+
         // favorites
-        if (p.isFavorite(o.getBuildingName() + o.getSpaceName())) {
-            unfav.setVisibility(View.VISIBLE);
-            fav.setVisibility(View.GONE);
+        if (p.isFavorite(o.getBuildingName() + o.getSpaceName()
+                + o.getRoomNames())) {
+            favorite.setChecked(true);
         } else {
-            unfav.setVisibility(View.GONE);
-            fav.setVisibility(View.VISIBLE);
+            favorite.setChecked(false);
         }
 
         View an = (View) getView().findViewById(R.id.availablenow);
@@ -175,16 +206,6 @@ public class TabDetails extends Fragment {
             else
                 an.setVisibility(View.GONE);
         }
-    }
-
-    public void onFavClick(View v) {
-        unfav.setVisibility(View.VISIBLE);
-        fav.setVisibility(View.GONE);
-    }
-
-    public void onRemoveFavClick(View v) {
-        fav.setVisibility(View.VISIBLE);
-        unfav.setVisibility(View.GONE);
     }
 
     public Intent getReserveIntent(View v) {

@@ -58,7 +58,7 @@ public class APIAccessor extends Application {
 
         } catch (Exception e) {
             this.studySpaces = previousSpaces;
-            Log.e(API_ACCESSOR, e.getMessage());
+            Log.e(API_ACCESSOR, e.toString());
         }
     }
 

@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bgrepeat"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -10,28 +9,17 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <TextView
-            android:layout_width="234dp"
+        <Button
+            android:layout_width="fill_parent"
             android:layout_height="45dp"
-            android:background="@color/lightblue"
+            android:background="@color/yellow"
             android:clickable="true"
             android:gravity="center"
+            android:onClick="onMapClick"
             android:padding="10dp"
-            android:text="@string/favorites"
+            android:text="@string/map"
             android:textColor="@color/black"
             android:textSize="20sp" />
-
-        <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="45dp"
-                android:background="@color/yellow"
-                android:clickable="true"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="@string/map"
-                android:textColor="@color/black"
-                android:onClick="onMapClick"
-                android:textSize="20sp" />
     </LinearLayout>
 
     <ListView
@@ -44,7 +32,5 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:text="@string/no_favorites" />
-
-
 
 </LinearLayout>

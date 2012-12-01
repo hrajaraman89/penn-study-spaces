@@ -2,25 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bgrepeat"
     android:orientation="vertical"
     android:padding="5dip" >
 
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:stretchColumns="1" >
 
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
-
-            <Button
-                android:id="@+id/searchButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onSearchButtonClick"
-                android:text="@string/search_button" />
 
             <Button
                 android:id="@+id/findNowButton"
@@ -30,116 +24,119 @@
                 android:onClick="onFindNowButtonClick"
                 android:text="@string/find_now" />
 
-            <Button
-                android:id="@+id/favoritesButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="3"
-                android:onClick="onFavoritesButtonClick"
-                android:text="@string/favorites" />
+          
         </TableRow>
+        <TextView
+            android:id="@+id/numberOfPeopleTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <SeekBar
+            android:id="@+id/numberOfPeopleSlider"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:max="19"
+            android:progress="0" />
     </TableLayout>
 
-    <TextView
-        android:id="@+id/numberOfPeopleTextView"
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/black" />
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" >
 
-    <SeekBar
-        android:id="@+id/numberOfPeopleSlider"
-        android:layout_width="fill_parent"
+        <Button
+            android:id="@+id/pickDate"
+            style="@android:style/Widget.Holo.Light.Spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom|left"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/dateDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/pickDate"
+            android:layout_alignParentTop="true"
+            android:text="DATE"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="?android:attr/textColorSecondaryNoDisable" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:max="19"
-        android:progress="0" />
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" >
 
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <!-- android:stretchColumns="1" -->
-
-        <TableRow
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/pickStartTime"
+                style="@android:style/Widget.Holo.Light.Spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:gravity="bottom|left"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/startTimeDisplay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/black" />
+                android:layout_alignLeft="@+id/pickStartTime"
+                android:layout_alignParentTop="true"
+                android:text="FROM"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="?android:attr/textColorSecondaryNoDisable" />
+        </RelativeLayout>
 
-            <Button
-                android:id="@+id/pickStartTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select start time" />
-        </TableRow>
-
-        <TableRow
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/pickEndTime"
+                style="@android:style/Widget.Holo.Light.Spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="bottom|left"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/endTimeDisplay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/black" />
+                android:layout_alignLeft="@+id/pickEndTime"
+                android:layout_alignParentTop="true"
+                android:text="TO"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="?android:attr/textColorSecondaryNoDisable" />
+        </RelativeLayout>
+    </RelativeLayout>
 
-            <Button
-                android:id="@+id/pickEndTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select end time" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/dateDisplay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/black" />
-
-            <Button
-                android:id="@+id/pickDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select date" />
-        </TableRow>
-    </TableLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </LinearLayout>
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/criteria"
+        android:paddingLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:textColor="?android:attr/textColorSecondaryNoDisable"
+        android:textAppearance="?android:attr/textAppearanceSmall" /> 
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
         android:orientation="horizontal" >
 
         <LinearLayout
@@ -152,29 +149,25 @@
                 android:id="@+id/privateCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/private_check_box"
-                android:textColor="@color/black" />
+                android:text="@string/private_check_box" />
 
             <CheckBox
                 android:id="@+id/whiteboardCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/whiteboard_check_box"
-                android:textColor="@color/black" />
+                android:text="@string/whiteboard_check_box" />
 
             <CheckBox
                 android:id="@+id/computerCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/computer_check_box"
-                android:textColor="@color/black" />
+                android:text="@string/computer_check_box" />
 
             <CheckBox
                 android:id="@+id/projectorCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/projector_check_box"
-                android:textColor="@color/black" />
+                android:text="@string/projector_check_box" />
         </LinearLayout>
 
         <LinearLayout
@@ -198,16 +191,17 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginRight="6dip"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:antialias="true"
                     android:src="@drawable/engiicon" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="-5dp"
                     android:layout_marginTop="5dp"
                     android:text="ngineering"
-                    android:textColor="@color/black"
                     android:textSize="18dp" />
             </LinearLayout>
 
@@ -226,16 +220,16 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginRight="6dip"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:antialias="true"
                     android:src="@drawable/whartonicon" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="-5dp"
                     android:layout_marginTop="5dp"
                     android:text="harton"
-                    android:textColor="@color/black"
                     android:textSize="18dp" />
             </LinearLayout>
 
@@ -254,16 +248,16 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginRight="6dip"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:antialias="true"
                     android:src="@drawable/libicon" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="-5dp"
                     android:layout_marginTop="5dp"
                     android:text="ibrary"
-                    android:textColor="@color/black"
                     android:textSize="18dp" />
             </LinearLayout>
 
@@ -276,26 +270,40 @@
                     android:id="@+id/otherbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:typeface="serif" />
 
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginRight="6dip"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:antialias="true"
                     android:src="@drawable/othericon" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="-5dp"
                     android:layout_marginTop="5dp"
                     android:text="thers"
-                    android:textColor="@color/black"
                     android:textSize="18dp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" >
+
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignParentBottom="true"
+            android:onClick="onSearchButtonClick"
+            android:text="@string/search_button" />
+    </RelativeLayout>
 
 </LinearLayout>

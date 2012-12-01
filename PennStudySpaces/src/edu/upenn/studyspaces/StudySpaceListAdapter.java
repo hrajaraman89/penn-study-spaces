@@ -65,8 +65,7 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                     bt.setText(o.getRooms()[0].getRoomName());
                 } else {
                     bt.setText(o.getRooms()[0].getRoomName() + " (and "
-                            + String.valueOf(o.getNumRooms() - 1)
-                            + " others)");
+                            + String.valueOf(o.getNumRooms() - 1) + " others)");
                 }
             }
             ImageView image = (ImageView) v.findViewById(R.id.icon);
@@ -162,7 +161,8 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                 filtered.remove(i);
                 continue;
             }
-            if (searchOptions.getComputer() && !filtered.get(i).getHasComputer()) {
+            if (searchOptions.getComputer()
+                    && !filtered.get(i).getHasComputer()) {
                 filtered.remove(i);
                 continue;
             }
@@ -223,7 +223,8 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
         this.fav_orig_items = SpaceInfo.sortByRank(this.orig_items);
         for (int i = fav_orig_items.size() - 1; i >= 0; i--) {
             if (!p.isFavorite(fav_orig_items.get(i).getBuildingName()
-                    + fav_orig_items.get(i).getSpaceName()))
+                    + fav_orig_items.get(i).getSpaceName()
+                    + fav_orig_items.get(i).getRoomNames()))
                 fav_orig_items.remove(i);
         }
     }
