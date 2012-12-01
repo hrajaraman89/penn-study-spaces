@@ -45,6 +45,7 @@ import android.widget.Toast;
 public class SearchFragment extends Fragment {
 
     private Button mSearchButton;
+    private Button mFindNowButton;
     private TextView mNumberOfPeopleTextView;
     private SeekBar mNumberOfPeopleSlider;
     private CheckBox mPrivateCheckBox;
@@ -145,6 +146,15 @@ public class SearchFragment extends Fragment {
 
             }
         });
+
+        mFindNowButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onFindNowButtonClick(v);
+            }
+        });
+
         mSearchOptions = new SearchOptions();
 
         setUpNumberOfPeopleSlider();
@@ -426,6 +436,7 @@ public class SearchFragment extends Fragment {
 
         // General:
         mSearchButton = (Button) layout.findViewById(R.id.searchButton);
+        mFindNowButton = (Button) layout.findViewById(R.id.findNowButton);
         mNumberOfPeopleTextView = (TextView) layout
                 .findViewById(R.id.numberOfPeopleTextView);
         mNumberOfPeopleSlider = (SeekBar) layout

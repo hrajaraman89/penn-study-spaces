@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ public class FavoritesFragment extends ListFragment {
 
     private SharedPreferences favorites;
     private Runnable viewAvailableSpaces;
+    private Button mMapButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class FavoritesFragment extends ListFragment {
         // Inflate the layout for this fragment
         LinearLayout layout = (LinearLayout) inflater.inflate(
                 R.layout.activity_favorites, container, false);
+        mMapButton = (Button) layout.findViewById(R.id.mapFavoritesButton);
 
         return layout;
     }
@@ -73,6 +76,16 @@ public class FavoritesFragment extends ListFragment {
                 preferences.addFavorites(s);
             }
         }
+
+        mMapButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onMapClick(v);
+
+            }
+        });
+
         ss_adapter.allToFav();
         viewAvailableSpaces = new Runnable() {
             public void run() {

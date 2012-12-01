@@ -10,15 +10,14 @@
         android:orientation="horizontal" >
 
         <Button
+            android:id="@+id/mapFavoritesButton"
             android:layout_width="fill_parent"
             android:layout_height="45dp"
-            android:background="@color/yellow"
             android:clickable="true"
             android:gravity="center"
             android:onClick="onMapClick"
             android:padding="10dp"
             android:text="@string/map"
-            android:textColor="@color/black"
             android:textSize="20sp" />
     </LinearLayout>
 
