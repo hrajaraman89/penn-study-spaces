@@ -21,6 +21,15 @@
                 android:layout_height="wrap_content"
                 android:onClick="onSearchButtonClick"
                 android:text="@string/search_button" />
+
+            <Button
+                android:id="@+id/findNowButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:onClick="onFindNowButtonClick"
+                android:text="@string/find_now" />
+
             <Button
                 android:id="@+id/favoritesButton"
                 android:layout_width="wrap_content"
@@ -28,7 +37,6 @@
                 android:layout_column="3"
                 android:onClick="onFavoritesButtonClick"
                 android:text="@string/favorites" />
-
         </TableRow>
     </TableLayout>
 
@@ -133,6 +141,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -192,14 +201,14 @@
                     android:layout_marginTop="10dp"
                     android:antialias="true"
                     android:src="@drawable/engiicon" />
-                <TextView 
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
                     android:layout_marginTop="5dp"
-                    android:text = "ngineering"
-                    />
+                    android:text="ngineering"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -220,14 +229,14 @@
                     android:layout_marginTop="10dp"
                     android:antialias="true"
                     android:src="@drawable/whartonicon" />
-                <TextView 
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
                     android:layout_marginTop="5dp"
-                    android:text = "harton"
-                    />
+                    android:text="harton"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -248,14 +257,14 @@
                     android:layout_marginTop="10dp"
                     android:antialias="true"
                     android:src="@drawable/libicon" />
-                <TextView 
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
                     android:layout_marginTop="5dp"
-                    android:text = "ibrary"
-                    />
+                    android:text="ibrary"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -269,6 +278,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:typeface="serif" />
+
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
@@ -276,15 +286,16 @@
                     android:layout_marginTop="10dp"
                     android:antialias="true"
                     android:src="@drawable/othericon" />
-                <TextView 
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
                     android:layout_marginTop="5dp"
-                    android:text = "thers"
-                    />
-            </LinearLayout>
+                    android:text="thers"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+</LinearLayout>

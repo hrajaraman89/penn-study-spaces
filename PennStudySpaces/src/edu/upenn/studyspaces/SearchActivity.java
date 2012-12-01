@@ -1,6 +1,7 @@
 package edu.upenn.studyspaces;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -11,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -59,6 +61,7 @@ public class SearchActivity extends Activity {
     static final int DATE_DIALOG_ID = 2;
 
     private Dialog mCurrentDialog;
+    private Location mLocation;
 
     private SearchOptions mSearchOptions;
 
@@ -125,9 +128,16 @@ public class SearchActivity extends Activity {
         try {
             _pIntent.send();
         } catch (CanceledException e) {
-            Log.e("SearchActivity", "Problem sending GPS location update request", e);
+            Log.e("SearchActivity",
+                    "Problem sending GPS location update request", e);
         }
 
+        // get current GPS location
+        String provider = locationManager.getBestProvider(_criteria, true);
+        mLocation = null;
+        if (provider != null) {
+            mLocation = locationManager.getLastKnownLocation(provider);
+        }
 
         // add a click listener to the button
         mPickStartTime.setOnClickListener(new View.OnClickListener() {
@@ -637,6 +647,46 @@ public class SearchActivity extends Activity {
             putDataInSearchOptionsObject();
             Intent i = new Intent(this, FavoritesActivity.class);
             i.putExtra("SEARCH_OPTIONS", (Serializable) mSearchOptions);
+            startActivity(i);
+        }
+    }
+
+    public void onFindNowButtonClick(View view) {
+        if (checkConnection()) {
+            // reinitialize the date and time to current value
+            resetTimeAndDateData();
+            mSearchOptions.setNumberOfPeople(mNumberOfPeopleSlider
+                    .getProgress());
+            mSearchOptions.setPrivate(false);
+            mSearchOptions.setWhiteboard(false);
+            mSearchOptions.setComputer(false);
+            mSearchOptions.setProjector(false);
+            mSearchOptions.setEngi(true);
+            mSearchOptions.setWhar(true);
+            mSearchOptions.setLib(true);
+            mSearchOptions.setOth(true);
+
+            // get the list of all the study spaces
+            ArrayList<StudySpace> studySpaces = ((APIAccessor) getApplication())
+                    .getStudySpaces();
+            ArrayList<StudySpace> ss_list = new ArrayList<StudySpace>();
+            Preferences preferences = new Preferences();
+            ss_list.addAll(studySpaces);
+
+            // filter them by location
+            StudySpaceListAdapter ss_adapter = new StudySpaceListAdapter(this,
+                    R.layout.sslistitem, ss_list, mSearchOptions);
+            ss_adapter.setLocation(mLocation);
+            ss_adapter.filterSpaces();
+            ss_adapter.updateFavorites(preferences);
+
+            // call the study space details activity with the first study space
+            // of the list (it is the closest)
+            Intent i = new Intent(this, StudySpaceDetails.class);
+            i.putExtra("STUDYSPACE", (StudySpace) ss_adapter.getItem(0));
+            i.putExtra("PREFERENCES", preferences);
+            setResult(RESULT_OK, i);
+            // ends this activity
             startActivity(i);
         }
     }
