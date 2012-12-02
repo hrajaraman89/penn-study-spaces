@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -489,7 +490,16 @@ public class SearchFragment extends Fragment {
             ArrayList<StudySpace> studySpaces = ((APIAccessor) getActivity()
                     .getApplication()).getStudySpaces();
             ArrayList<StudySpace> ss_list = new ArrayList<StudySpace>();
-            Preferences preferences = new Preferences();
+            SharedPreferences favorites = this.getActivity().getSharedPreferences(StudySpaceListActivity.FAV_PREFERENCES, 0);
+            Map<String, ?> items = favorites.getAll();
+            Preferences preferences = new Preferences(); // Change this when bundle is
+                                             // implemented.
+            for (String s : items.keySet()) {
+                // boolean fav = favorites.getBoolean(s, false);
+                if (Boolean.parseBoolean(items.get(s).toString())) {
+                    preferences.addFavorites(s);
+                }
+            }
             ss_list.addAll(studySpaces);
 
             // filter them by location
