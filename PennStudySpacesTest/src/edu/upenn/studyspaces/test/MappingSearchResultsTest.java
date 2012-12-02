@@ -122,10 +122,10 @@ public class MappingSearchResultsTest extends ActivityInstrumentationTestCase2<M
         }
         
         // select the time to be from 1pm to 2pm for safety, other time might lead to weird room availability.
-        solo.clickOnButton(2);
+        solo.clickOnButton(1);
         solo.setTimePicker(0, 13, 0);
         solo.clickOnButton("Done");
-        solo.clickOnButton(3);
+        solo.clickOnButton(2);
         solo.setTimePicker(0, 14, 0);
         solo.clickOnButton("Done");
     }
