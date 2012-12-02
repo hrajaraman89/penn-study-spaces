@@ -1,6 +1,5 @@
 package edu.upenn.studyspaces.test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,7 +11,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -23,25 +21,25 @@ import com.jayway.android.robotium.solo.Solo;
 
 import edu.upenn.studyspaces.CustomMap;
 import edu.upenn.studyspaces.CustomMap.PinOverlay;
-import edu.upenn.studyspaces.FavoritesActivity;
+import edu.upenn.studyspaces.FavoritesFragment;
+import edu.upenn.studyspaces.MainActivity;
 import edu.upenn.studyspaces.R;
-import edu.upenn.studyspaces.SearchActivity;
 import edu.upenn.studyspaces.StudySpace;
 
-public class MappingFavoritesTest extends ActivityInstrumentationTestCase2<SearchActivity> {
+public class MappingFavoritesTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
     private Solo solo;
     private Set<String> toBeRestoredKeys = new HashSet<String>();
     private Editor editor;
 
     public MappingFavoritesTest() {
-        super(SearchActivity.class);
+        super(MainActivity.class);
     }
 
     protected void setUp() throws Exception {
         // make sure we start from scratch for each test
         super.setUp();
-        SearchActivity activity = getActivity();
+        MainActivity activity = getActivity();
         solo = new Solo(getInstrumentation(), activity);        
     }
     
@@ -53,29 +51,16 @@ public class MappingFavoritesTest extends ActivityInstrumentationTestCase2<Searc
     }
 
     public void testMappingAllFavorites() throws InterruptedException {
-        assertEquals(true, solo.waitForActivity("SearchActivity"));
+        assertEquals(true, solo.waitForActivity("MainActivity"));
+        MainActivity mainActivity = (MainActivity) solo.getCurrentActivity();
 
-        solo.clickOnButton("Favorites");
-        
-        boolean waitedForFavoriteActivity = solo.waitForActivity("FavoritesActivity");
-        assertEquals(true, waitedForFavoriteActivity);
-        FavoritesActivity favoritesActivity = (FavoritesActivity) solo.getCurrentActivity();
-        
-        ArrayList<View> currentViews = solo.getCurrentViews();
-        if (currentViews.size() == 0) {
-            // we are in the loading dialog
-            // have to wait for a while because the app will make API request
-            boolean waitForDialogToClose = solo.waitForDialogToClose(90000);
-            assertEquals(true, waitForDialogToClose);
-        }
-        ListView listView = favoritesActivity.getListView();
-        solo.waitForView(listView);
-
-        SharedPreferences favorites = favoritesActivity.getSharedPreferences("favoritePreferences", 0);        
-        editor = favorites.edit();
-        
         // make sure we have at least 3 entries in the favourite set
-        String[] vals = new String[] {"Levine HallAuditorium", "Towne BuildingConference Room", "Jon M. Huntsman HallForum"};
+        SharedPreferences favorites = mainActivity.getSharedPreferences("favoritePreferences", 0);        
+        editor = favorites.edit();
+        String[] vals = new String[] {
+                "Levine HallConference RoomLevine Hall Conference Room 512",
+                "Towne BuildingMultipurpose RoomTowne Room 225 – Raisler Lounge",
+                "Jon M. Huntsman HallForumPatty and Jay Baker Forum" };
         for(String oneVal : vals) {
             if (!favorites.getBoolean(oneVal, false)) {
                 editor.putBoolean(oneVal, true);
@@ -84,19 +69,36 @@ public class MappingFavoritesTest extends ActivityInstrumentationTestCase2<Searc
         }
         editor.commit();
 
-        
-        // make sure there are at least a few favourite entries
-        FavoritesActivity favoriteActivity = (FavoritesActivity) solo.getCurrentActivity();
-        
-        // wait because of API call
-        solo.waitForDialogToClose(30000);
-        
-        ListAdapter listAdapter = favoriteActivity.getListAdapter();
-        assertEquals(true, listAdapter.getCount() >= 3);
+        getInstrumentation().waitForIdleSync();
+        solo.clickOnText("Search");
+        solo.clickOnText("Favorites");
+
+        // may take a while to load because we need to make API call
+        String favTag = mainActivity.getString(R.string.favorites);
+        boolean waitedForFavoriteFragment = solo.waitForFragmentByTag(favTag, 60000);
+        assertEquals(true, waitedForFavoriteFragment);
+
+        FavoritesFragment favFragment = (FavoritesFragment) mainActivity.getSupportFragmentManager().findFragmentByTag(favTag);
+
+        if (solo.searchText("Retrieving data ...")) {
+            // we are in the loading dialog
+            // have to wait for a while because the app is making API request
+            boolean waitForDialogToClose = solo.waitForDialogToClose(90000);
+            assertEquals(true, waitForDialogToClose);
+        }
+
+        assertEquals(true, favFragment.isVisible());
+
+        ListView listView = favFragment.getListView();
+        solo.waitForView(listView);
+
+        ListAdapter listAdapter = favFragment.getListAdapter();
+        int count = listAdapter.getCount();
+        assertEquals(true, count >= 3);
 
         // build the list of geoPoints that will be shown in the map
         Set<GeoPoint> geoPoints = new HashSet<GeoPoint>(); 
-        int listAdapterCount = listAdapter.getCount();
+        int listAdapterCount = count;
         for(int i = 0; i < listAdapterCount; i++) {
             StudySpace studySpace = (StudySpace) listAdapter.getItem(i);
             double latitude = studySpace.getLatitude();
