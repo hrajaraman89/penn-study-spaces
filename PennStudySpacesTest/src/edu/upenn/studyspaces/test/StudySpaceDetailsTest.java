@@ -70,10 +70,10 @@ public class StudySpaceDetailsTest extends
 
         solo = new Solo(getInstrumentation(), detailsActivity);
     }
-    
+
     protected void setUp2() throws Exception {
         super.setUp();
-        
+
         rooms = new Room[1];
         rooms[0] = room1;
 
@@ -87,11 +87,10 @@ public class StudySpaceDetailsTest extends
 
         Intent i = new Intent();
         preferences = new Preferences();
-        
-        preferences.addFavorites(studySpace.getBuildingName() + studySpace.getSpaceName()
-                + studySpace.getRoomNames());
 
-       
+        preferences.addFavorites(studySpace.getBuildingName()
+                + studySpace.getSpaceName() + studySpace.getRoomNames());
+
         i.putExtra("STUDYSPACE", studySpace);
         i.putExtra("PREFERENCES", preferences);
 
@@ -100,9 +99,16 @@ public class StudySpaceDetailsTest extends
 
         solo = new Solo(getInstrumentation(), detailsActivity);
     }
-   
-
+    
     protected void tearDown() throws Exception {
+        SharedPreferences favorites = detailsActivity.getSharedPreferences(
+                "favoritePreferences", 0);
+        SharedPreferences.Editor editor = favorites.edit();
+
+        editor.remove(studySpace.getBuildingName() + studySpace.getSpaceName()
+                + studySpace.getRoomNames());
+        editor.commit();
+
         solo.finishOpenedActivities();
         super.tearDown();
     }
@@ -146,14 +152,14 @@ public class StudySpaceDetailsTest extends
                 + studySpace.getSpaceName() + studySpace.getRoomNames()));
 
     }
-    
+
     public void testRemoveFavorites() throws Exception {
         setUp2();
-        
+
         solo.clickOnCheckBox(0);
         preferences = getPreferences();
         assertFalse(preferences.isFavorite(studySpace.getBuildingName()
                 + studySpace.getSpaceName() + studySpace.getRoomNames()));
     }
-    
+
 }
