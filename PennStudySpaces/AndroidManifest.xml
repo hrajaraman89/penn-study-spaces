@@ -70,10 +70,12 @@
 
         <uses-library android:name="com.google.android.maps" />
 
-        <activity
+        <fragment
+            android:id="@+id/favoritesFragment"
             android:name=".FavoritesFragment"
-            android:label="@string/favorites" >
-        </activity>
+            android:label="@string/favorites"
+            android:screenOrientation="portrait" >
+        </fragment>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
