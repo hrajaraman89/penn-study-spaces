@@ -1,24 +1,14 @@
 package edu.upenn.studyspaces;
 
 import android.app.ActionBar;
-import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NavUtils;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity implements
         ActionBar.OnNavigationListener {
@@ -38,7 +28,7 @@ public class MainActivity extends FragmentActivity implements
         // Set up the dropdown list navigation in the action bar.
         actionBar.setListNavigationCallbacks(
         // Specify a SpinnerAdapter to populate the dropdown list.
-                new ArrayAdapter(actionBar.getThemedContext(),
+                new ArrayAdapter<String>(actionBar.getThemedContext(),
                         android.R.layout.simple_list_item_1,
                         android.R.id.text1, new String[] {
                                 getString(R.string.search),
@@ -71,18 +61,20 @@ public class MainActivity extends FragmentActivity implements
         switch (position) {
         case 0:
             fragment = new SearchFragment();
+            id = fragment.getId();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment).commit();
+                    .replace(R.id.container, fragment, getString(R.string.search)).commit();
             break;
         case 1:
             fragment = new FavoritesFragment();
+            String tag = fragment.getTag(); fragment.getId();
             /*
              * Bundle args = new Bundle();
              * args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position +
              * 1); fragment.setArguments(args);
              */
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment).commit();
+                    .replace(R.id.container, fragment, getString(R.string.favorites)).commit();
         }
         return true;
     }
