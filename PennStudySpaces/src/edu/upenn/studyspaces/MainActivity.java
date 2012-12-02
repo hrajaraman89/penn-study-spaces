@@ -61,13 +61,11 @@ public class MainActivity extends FragmentActivity implements
         switch (position) {
         case 0:
             fragment = new SearchFragment();
-            id = fragment.getId();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, fragment, getString(R.string.search)).commit();
             break;
         case 1:
             fragment = new FavoritesFragment();
-            String tag = fragment.getTag(); fragment.getId();
             /*
              * Bundle args = new Bundle();
              * args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position +
