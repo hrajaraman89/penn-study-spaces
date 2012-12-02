@@ -4,32 +4,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:layout_height="fill_parent" >
 
         <Button
             android:id="@+id/mapFavoritesButton"
             android:layout_width="fill_parent"
             android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
             android:clickable="true"
             android:gravity="center"
             android:onClick="onMapClick"
             android:padding="10dp"
             android:text="@string/map"
             android:textSize="20sp" />
-    </LinearLayout>
 
-    <ListView
-        android:id="@+id/android:list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        <ListView
+            android:id="@+id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/mapFavoritesButton" />
 
-    <TextView
-        android:id="@+id/android:empty"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:text="@string/no_favorites" />
+        <TextView
+            android:id="@+id/android:empty"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/no_favorites" />
+    </RelativeLayout>
 
 </LinearLayout>

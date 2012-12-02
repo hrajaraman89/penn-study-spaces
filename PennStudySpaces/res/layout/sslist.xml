@@ -11,26 +11,34 @@
         android:layout_marginTop="5dp"
         android:hint="Search" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:gravity="center"
-        android:onClick="onMapClick"
-        android:padding="10dp"
-        android:text="@string/map"
-        android:textSize="20sp" />
-
-    <ListView
-        android:id="@+id/android:list"
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center" />
+        android:layout_height="fill_parent" >
 
-    <TextView
-        android:id="@+id/android:empty"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:text="@string/main_no_items" />
+        <Button
+            android:id="@+id/mapListButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onMapClick"
+            android:padding="10dp"
+            android:text="@string/map"
+            android:textSize="20sp" />
+
+        <ListView
+            android:id="@+id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/mapListButton"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/android:empty"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/main_no_items" />
+    </RelativeLayout>
 
 </LinearLayout>

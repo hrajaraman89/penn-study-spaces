@@ -188,16 +188,17 @@
                 android:text="@string/add_reserve"
                 android:textSize="20sp" />
         </LinearLayout>
-
+
         <Button
             android:id="@+id/shareButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:onClick="onShareClick"
             android:text="@string/add_share_text"
-            android:textColor="@color/black" />
+            android:textSize="20sp" />
+
     </LinearLayout>
 
 </ScrollView>

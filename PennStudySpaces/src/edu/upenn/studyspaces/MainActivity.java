@@ -76,11 +76,6 @@ public class MainActivity extends FragmentActivity implements
             break;
         case 1:
             fragment = new FavoritesFragment();
-            /*
-             * Bundle args = new Bundle();
-             * args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position +
-             * 1); fragment.setArguments(args);
-             */
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, fragment).commit();
         }

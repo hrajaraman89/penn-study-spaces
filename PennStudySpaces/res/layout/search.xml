@@ -12,20 +12,6 @@
         android:paddingRight="10dp"
         android:stretchColumns="1" >
 
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <Button
-                android:id="@+id/findNowButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:onClick="onFindNowButtonClick"
-                android:text="@string/find_now" />
-
-          
-        </TableRow>
         <TextView
             android:id="@+id/numberOfPeopleTextView"
             android:layout_width="fill_parent"
@@ -127,17 +113,17 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/criteria"
-        android:paddingLeft="20dp"
         android:layout_marginTop="20dp"
-        android:textColor="?android:attr/textColorSecondaryNoDisable"
-        android:textAppearance="?android:attr/textAppearanceSmall" /> 
+        android:paddingLeft="20dp"
+        android:text="@string/criteria"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="?android:attr/textColorSecondaryNoDisable" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingLeft="20dp" >
 
         <LinearLayout
             android:layout_width="0dp"
@@ -198,7 +184,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_marginLeft="-5dp"
                     android:layout_marginTop="5dp"
                     android:text="ngineering"
@@ -291,19 +276,30 @@
         </LinearLayout>
     </LinearLayout>
 
-    <RelativeLayout
+    <TableLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" >
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dp"
+        android:stretchColumns="1" >
 
-        <Button
-            android:id="@+id/searchButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_alignParentBottom="true"
-            android:onClick="onSearchButtonClick"
-            android:text="@string/search_button" />
-    </RelativeLayout>
+        <TableRow android:layout_marginTop="20dp" >
+
+            <Button
+                android:id="@+id/findNowButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onFindNowButtonClick"
+                android:text="@string/find_now" />
+
+            <Button
+                android:id="@+id/searchButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onSearchButtonClick"
+                android:text="@string/search_button" />
+        </TableRow>
+    </TableLayout>
 
 </LinearLayout>
