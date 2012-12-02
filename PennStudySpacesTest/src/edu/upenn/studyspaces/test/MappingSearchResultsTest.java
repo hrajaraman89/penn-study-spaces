@@ -1,6 +1,5 @@
 package edu.upenn.studyspaces.test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,7 +9,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -22,24 +20,24 @@ import com.jayway.android.robotium.solo.Solo;
 
 import edu.upenn.studyspaces.CustomMap;
 import edu.upenn.studyspaces.CustomMap.PinOverlay;
+import edu.upenn.studyspaces.MainActivity;
 import edu.upenn.studyspaces.R;
-import edu.upenn.studyspaces.SearchActivity;
 import edu.upenn.studyspaces.StudySpace;
 import edu.upenn.studyspaces.StudySpaceListActivity;
 import edu.upenn.studyspaces.StudySpaceListAdapter;
 
-public class MappingSearchResultsTest extends ActivityInstrumentationTestCase2<SearchActivity> {
+public class MappingSearchResultsTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
     private Solo solo;
 
     public MappingSearchResultsTest() {
-        super(SearchActivity.class);
+        super(MainActivity.class);
     }
 
     protected void setUp() throws Exception {
         // make sure we start from scratch for each test
         super.setUp();
-        SearchActivity activity = getActivity();
+        MainActivity activity = getActivity();
         solo = new Solo(getInstrumentation(), activity);
     }
     
@@ -81,8 +79,8 @@ public class MappingSearchResultsTest extends ActivityInstrumentationTestCase2<S
     }
 
     private void setSearchPreference(int numOfPeople, boolean[] building, boolean[] features) {
-        solo.waitForActivity("SearchActivity");
-        SearchActivity searchActivity = (SearchActivity) solo.getCurrentActivity();
+        solo.waitForActivity("MainActivity");
+        MainActivity searchActivity = (MainActivity) solo.getCurrentActivity();
 
         ProgressBar progressBar = (ProgressBar) searchActivity.findViewById(R.id.numberOfPeopleSlider);
         // 0 based indexing, has to subtract 1
@@ -124,12 +122,12 @@ public class MappingSearchResultsTest extends ActivityInstrumentationTestCase2<S
         }
         
         // select the time to be from 1pm to 2pm for safety, other time might lead to weird room availability.
-        solo.clickOnButton("Select start time");
+        solo.clickOnButton(2);
         solo.setTimePicker(0, 13, 0);
-        solo.clickOnButton("OK");
-        solo.clickOnButton("Select end time");
+        solo.clickOnButton("Done");
+        solo.clickOnButton(3);
         solo.setTimePicker(0, 14, 0);
-        solo.clickOnButton("OK");
+        solo.clickOnButton("Done");
     }
 
     private void runAndVerify() {
@@ -138,11 +136,9 @@ public class MappingSearchResultsTest extends ActivityInstrumentationTestCase2<S
 
         StudySpaceListActivity ssListActivity = (StudySpaceListActivity) solo.getCurrentActivity();
 
-        ArrayList<View> currentViews = solo.getCurrentViews();
-
-        if (currentViews.size() == 0) {
+        if (solo.searchText("Retrieving data ...")) {
             // we are in the loading dialog
-            // have to wait for a while because the app will make API request
+            // have to wait for a while because the app is making API request
             boolean waitForDialogToClose = solo.waitForDialogToClose(90000);
             assertEquals(true, waitForDialogToClose);
         }
