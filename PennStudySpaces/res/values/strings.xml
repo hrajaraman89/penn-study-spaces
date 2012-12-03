@@ -12,6 +12,7 @@
     <string name="whiteboard_check_box">Whiteboard</string>
     <string name="computer_check_box">Computer</string>
     <string name="projector_check_box">Projector</string>
+    <string name="reservable_check_box">Reservable</string>
     <string name="map">Map</string>
     <string name="details">Details</string>
     <string name="info">Info</string>

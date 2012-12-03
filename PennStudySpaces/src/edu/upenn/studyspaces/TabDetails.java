@@ -1,11 +1,8 @@
 package edu.upenn.studyspaces;
 
-import java.util.Calendar;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,12 +12,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import edu.upenn.studyspaces.utilities.IntentCreators;
 import edu.upenn.studyspaces.utilities.ReservationNotifier;
 
 public class TabDetails extends Fragment {
 
-    private StudySpace o;
-    private Preferences p;
+    private StudySpace studySpace;
+    private Preferences preferences;
     private ReservationNotifier notifier;
     private CheckBox favorite;
     private SharedPreferences favorites;
@@ -39,29 +38,29 @@ public class TabDetails extends Fragment {
         notifier = new ReservationNotifier();
 
         Intent i = getActivity().getIntent();
-        o = (StudySpace) i.getSerializableExtra("STUDYSPACE");
-        p = (Preferences) i.getSerializableExtra("PREFERENCES");
+        studySpace = (StudySpace) i.getSerializableExtra("STUDYSPACE");
+        preferences = (Preferences) i.getSerializableExtra("PREFERENCES");
 
         favorites = getActivity().getSharedPreferences(
                 StudySpaceListActivity.FAV_PREFERENCES, 0);
 
         TextView tt = (TextView) getView().findViewById(R.id.spacename);
-        tt.setText(o.getBuildingName());
+        tt.setText(studySpace.getBuildingName());
 
         TextView rt = (TextView) getView().findViewById(R.id.roomtype);
-        rt.setText(o.getSpaceName());
+        rt.setText(studySpace.getSpaceName());
 
         TextView rn = (TextView) getView().findViewById(R.id.roomnumbers);
-        rn.setText(o.getRoomNames());
+        rn.setText(studySpace.getRoomNames());
 
         TextView mo = (TextView) getView().findViewById(R.id.maxoccupancy);
-        mo.setText("Maximum occupancy: " + o.getMaxOccupancy());
+        mo.setText("Maximum occupancy: " + studySpace.getMaxOccupancy());
 
         TextView pi = (TextView) getView().findViewById(R.id.privacy);
         ImageView private_icon = (ImageView) getView().findViewById(
                 R.id.private_icon);
 
-        if (o.getPrivacy().equals("S")) {
+        if (studySpace.getPrivacy().equals("S")) {
             pi.setText("This study space is a common Space");
             if (private_icon != null) {
                 Resources resource = getResources();
@@ -82,7 +81,7 @@ public class TabDetails extends Fragment {
         TextView res = (TextView) getView().findViewById(R.id.reservetype);
         View calLayout = getView().findViewById(R.id.addCal);
         View resLayout = getView().findViewById(R.id.reserve);
-        if (o.getReserveType().equals("N")) {
+        if (studySpace.getReserveType().equals("N")) {
             res.setText("This study space is non-reservable.");
             calLayout.setVisibility(View.VISIBLE);
             resLayout.setVisibility(View.GONE);
@@ -94,7 +93,7 @@ public class TabDetails extends Fragment {
         TextView wb = (TextView) getView().findViewById(R.id.whiteboard);
         ImageView wb_icon = (ImageView) getView().findViewById(
                 R.id.whiteboard_icon);
-        if (o.hasWhiteboard()) {
+        if (studySpace.hasWhiteboard()) {
             if (wb_icon != null) {
                 Resources resource = getResources();
                 int resID = resource.getIdentifier("icon_whiteboard",
@@ -115,7 +114,7 @@ public class TabDetails extends Fragment {
         TextView com = (TextView) getView().findViewById(R.id.computer);
         ImageView com_icon = (ImageView) getView().findViewById(
                 R.id.computer_icon);
-        if (o.getHasComputer()) {
+        if (studySpace.getHasComputer()) {
             com.setText("This study space has a computer.");
             if (com_icon != null) {
                 Resources resource = getResources();
@@ -136,7 +135,7 @@ public class TabDetails extends Fragment {
         TextView proj = (TextView) getView().findViewById(R.id.projector);
         ImageView proj_icon = (ImageView) getView().findViewById(
                 R.id.projector_icon);
-        if (o.getHasBigScreen()) {
+        if (studySpace.getHasBigScreen()) {
             proj.setText("This study space has a big screen.");
             if (proj_icon != null) {
                 Resources resource = getResources();
@@ -163,18 +162,24 @@ public class TabDetails extends Fragment {
                 SharedPreferences.Editor editor = favorites.edit();
 
                 if (isChecked) {
-                    p.addFavorites(o.getBuildingName() + o.getSpaceName()
-                            + o.getRoomNames());
+                    preferences.addFavorites(studySpace.getBuildingName()
+                            + studySpace.getSpaceName()
+                            + studySpace.getRoomNames());
 
-                    editor.putBoolean(o.getBuildingName() + o.getSpaceName()
-                            + o.getRoomNames(), true);
+                    editor.putBoolean(
+                            studySpace.getBuildingName()
+                                    + studySpace.getSpaceName()
+                                    + studySpace.getRoomNames(), true);
                     ((StudySpaceDetails) getActivity()).removedFavorite = false;
                 } else {
-                    p.removeFavorites(o.getBuildingName() + o.getSpaceName()
-                            + o.getRoomNames());
+                    preferences.removeFavorites(studySpace.getBuildingName()
+                            + studySpace.getSpaceName()
+                            + studySpace.getRoomNames());
 
-                    editor.putBoolean(o.getBuildingName() + o.getSpaceName()
-                            + o.getRoomNames(), false);
+                    editor.putBoolean(
+                            studySpace.getBuildingName()
+                                    + studySpace.getSpaceName()
+                                    + studySpace.getRoomNames(), false);
                     ((StudySpaceDetails) getActivity()).removedFavorite = true;
                 }
                 editor.commit();
@@ -183,8 +188,8 @@ public class TabDetails extends Fragment {
         });
 
         // favorites
-        if (p.isFavorite(o.getBuildingName() + o.getSpaceName()
-                + o.getRoomNames())) {
+        if (preferences.isFavorite(studySpace.getBuildingName()
+                + studySpace.getSpaceName() + studySpace.getRoomNames())) {
             favorite.setChecked(true);
         } else {
             favorite.setChecked(false);
@@ -193,7 +198,7 @@ public class TabDetails extends Fragment {
         View an = (View) getView().findViewById(R.id.availablenow);
         if (an != null) {
             boolean availableNow = false;
-            for (Room r : o.getRooms()) {
+            for (Room r : studySpace.getRooms()) {
                 try {
                     if (r.availableNow())
                         availableNow = true;
@@ -208,55 +213,23 @@ public class TabDetails extends Fragment {
         }
     }
 
-    public Intent getReserveIntent(View v) {
-        Intent k = null;
-        if (o.getBuildingType().equals(StudySpace.WHARTON)) {
-            k = new Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("https://spike.wharton.upenn.edu/Calendar/gsr.cfm?"));
-        } else if (o.getBuildingType().equals(StudySpace.ENGINEERING)) {
-            k = new Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("https://weblogin.pennkey.upenn.edu/login/?factors=UPENN.EDU&cosign-seas-www_userpages-1&https://www.seas.upenn.edu/about-seas/room-reservation/form.php"));
-        } else if (o.getBuildingType().equals(StudySpace.LIBRARIES)) {
-            k = new Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("https://weblogin.library.upenn.edu/cgi-bin/login?authz=grabit&app=http://bookit.library.upenn.edu/cgi-bin/rooms/rooms"));
-        }
-        return k;
-    }
-
-    public Intent getCalIntent(View v) {
-        Calendar cal = Calendar.getInstance();
-        Intent intent = new Intent(Intent.ACTION_EDIT)
-                .setType("vnd.android.cursor.item/event")
-                .putExtra("beginTime", cal.getTimeInMillis())
-                .putExtra("endTime", cal.getTimeInMillis() + 60 * 60 * 1000)
-                .putExtra("title", "PennStudySpaces Reservation")
-                .putExtra(
-                        "eventLocation",
-                        o.getBuildingName() + " - "
-                                + o.getRooms()[0].getRoomName());
-        return intent;
-    }
-
     public void onReserveClick(View v) {
-        Intent k = getReserveIntent(v);
+        Intent k = IntentCreators.getReserveIntent(studySpace);
         if (k != null)
             startActivity(k);
+        else {
+            Toast.makeText(this.getActivity().getBaseContext(),
+                    "Whoops! Something went wrong..", Toast.LENGTH_LONG).show();
+        }
 
     }
 
     public void onCalClick(View v) {
-        Intent calIntent = getCalIntent(v);
+        Intent calIntent = IntentCreators.getCalIntent(studySpace);
         startActivity(calIntent);
     }
 
     public void onShareClick(View v) {
-        Calendar start = Calendar.getInstance();
-        Calendar end = Calendar.getInstance();
-        end.add(Calendar.HOUR, 1);
-
-        startActivity(notifier.getSharingIntent(start, end, o));
+        startActivity(notifier.getSharingIntent(studySpace));
     }
 }

@@ -171,6 +171,12 @@ public class StudySpaceListAdapter extends ArrayAdapter<StudySpace> {
                 filtered.remove(i);
                 continue;
             }
+
+            if (searchOptions.getReservable()
+                    && !filtered.get(i).isReservable()) {
+                filtered.remove(i);
+                continue;
+            }
             i++;
         }
 

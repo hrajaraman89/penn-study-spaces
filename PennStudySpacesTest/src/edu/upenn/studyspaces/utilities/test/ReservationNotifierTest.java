@@ -3,8 +3,6 @@ package edu.upenn.studyspaces.utilities.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +29,6 @@ public class ReservationNotifierTest {
     }
 
     private void testNotifier() {
-        Calendar now = Calendar.getInstance();
 
         String spaceName = "name";
         String buildingName = "bname";
@@ -41,7 +38,7 @@ public class ReservationNotifierTest {
                 .setBuildingName(buildingName).setLatitude(latitude)
                 .setLongitude(longtitude);
 
-        Intent intent = this.notifier.getSharingIntent(now, now, space);
+        Intent intent = this.notifier.getSharingIntent(space);
 
         assertTrue(intent != null);
         assertEquals("text/plain", intent.getType());

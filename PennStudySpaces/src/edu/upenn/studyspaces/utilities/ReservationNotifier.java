@@ -17,8 +17,12 @@ public class ReservationNotifier {
 
     private static final String TYPE = "text/plain";
 
-    public Intent getSharingIntent(Calendar timeBegin, Calendar timeEnd,
-            StudySpace space) {
+    public Intent getSharingIntent(StudySpace space) {
+
+        Calendar timeBegin = Calendar.getInstance();
+        Calendar timeEnd = Calendar.getInstance();
+        timeEnd.add(Calendar.HOUR, 1);
+
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType(TYPE);
         intent.putExtra(Intent.EXTRA_SUBJECT, SUBJECT);

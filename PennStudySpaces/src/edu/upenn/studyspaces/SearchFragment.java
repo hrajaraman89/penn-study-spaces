@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 import android.app.Activity;
@@ -26,7 +27,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
@@ -43,35 +43,37 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-public class SearchFragment extends Fragment {
+import com.actionbarsherlock.app.SherlockFragment;
 
-    private Button mSearchButton;
-    private Button mFindNowButton;
-    private TextView mNumberOfPeopleTextView;
-    private SeekBar mNumberOfPeopleSlider;
-    private CheckBox mPrivateCheckBox;
-    private CheckBox mWhiteboardCheckBox;
-    private CheckBox mComputerCheckBox;
-    private CheckBox mProjectorCheckBox;
+public class SearchFragment extends SherlockFragment {
 
-    private CheckBox mEngiBox;
-    private CheckBox mWharBox;
-    private CheckBox mLibBox;
-    private CheckBox mOthBox;
+    private Button searchButton;
+    private Button findNowButton;
+    private TextView numPeopleTextView;
+    private SeekBar numPeopleSlider;
+    private CheckBox isPrivateCheckBox;
+    private CheckBox whiteboardCheckBox;
+    private CheckBox computerCheckBox;
+    private CheckBox projectorCheckBox;
 
-    private Button mPickStartTime;
-    private Button mPickEndTime;
-    private Button mPickDate;
+    private CheckBox engineeringCheckBox;
+    private CheckBox whartonCheckBox;
+    private CheckBox libraryCheckBox;
+    private CheckBox otherCheckBox;
+
+    private CheckBox reservableCheckBox;
+
+    private Button startTimeButton;
+    private Button endTimeButton;
+    private Button dateButton;
+
+    private Location location;
+    private SearchOptions searchOptions;
+    private SharedPreferences sharedPreferences;
 
     static final int START_TIME_DIALOG_ID = 0;
     static final int END_TIME_DIALOG_ID = 1;
     static final int DATE_DIALOG_ID = 2;
-
-    private Location mLocation;
-
-    private SearchOptions mSearchOptions;
-
-    private SharedPreferences search;
     static final String SEARCH_PREFERENCES = "searchPreferences";
 
     @Override
@@ -97,12 +99,12 @@ public class SearchFragment extends Fragment {
 
             switch (message.what) {
             case START_TIME_DIALOG_ID:
-                mSearchOptions.setStartHour(mHour);
-                mSearchOptions.setStartMinute(fixedMinute);
+                searchOptions.setStartHour(mHour);
+                searchOptions.setStartMinute(fixedMinute);
                 break;
             case END_TIME_DIALOG_ID:
-                mSearchOptions.setEndHour(mHour);
-                mSearchOptions.setEndMinute(fixedMinute);
+                searchOptions.setEndHour(mHour);
+                searchOptions.setEndMinute(fixedMinute);
                 break;
             case DATE_DIALOG_ID:
                 int dayOfMonth = bundle.getInt("day");
@@ -110,9 +112,9 @@ public class SearchFragment extends Fragment {
                 int year = bundle.getInt("year");
                 int fixedYear = fixYear(year);
 
-                mSearchOptions.setYear(fixedYear);
-                mSearchOptions.setMonth(monthOfYear);
-                mSearchOptions.setDay(dayOfMonth);
+                searchOptions.setYear(fixedYear);
+                searchOptions.setMonth(monthOfYear);
+                searchOptions.setDay(dayOfMonth);
                 break;
             }
 
@@ -124,7 +126,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.search,
+        View layout = inflater.inflate(R.layout.search,
                 container, false);
         captureViewElements(layout);
 
@@ -137,9 +139,10 @@ public class SearchFragment extends Fragment {
 
         checkConnection();
 
-        search = this.getActivity().getSharedPreferences(SEARCH_PREFERENCES, 0);
+        sharedPreferences = this.getActivity().getSharedPreferences(
+                SEARCH_PREFERENCES, 0);
 
-        mSearchButton.setOnClickListener(new View.OnClickListener() {
+        searchButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -148,7 +151,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        mFindNowButton.setOnClickListener(new View.OnClickListener() {
+        findNowButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -156,13 +159,13 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        mSearchOptions = new SearchOptions();
+        searchOptions = new SearchOptions();
 
         setUpNumberOfPeopleSlider();
 
-        int numberOfPeople = search.getInt("numberOfPeople", -1);
+        int numberOfPeople = sharedPreferences.getInt("numberOfPeople", -1);
         if (numberOfPeople != -1) {
-            mNumberOfPeopleSlider.setProgress(numberOfPeople - 1);
+            numPeopleSlider.setProgress(numberOfPeople - 1);
         }
 
         resetTimeAndDateData();
@@ -193,34 +196,33 @@ public class SearchFragment extends Fragment {
 
         // get current GPS location
         String provider = locationManager.getBestProvider(_criteria, true);
-        mLocation = null;
+        location = null;
         if (provider != null) {
-            mLocation = locationManager.getLastKnownLocation(provider);
+            location = locationManager.getLastKnownLocation(provider);
         }
 
         // add a click listener to the button
-        mPickStartTime.setOnClickListener(new View.OnClickListener() {
+        startTimeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 DialogFragment startTimeDialog = new TimePickerFragment(
-                        mHandler, START_TIME_DIALOG_ID, mSearchOptions
-                                .getStartHour(), mSearchOptions
-                                .getStartMinute());
+                        mHandler, START_TIME_DIALOG_ID, searchOptions
+                                .getStartHour(), searchOptions.getStartMinute());
                 startTimeDialog.show(getFragmentManager(), "startTimePicker");
             }
         });
-        mPickEndTime.setOnClickListener(new View.OnClickListener() {
+        endTimeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 DialogFragment startTimeDialog = new TimePickerFragment(
-                        mHandler, END_TIME_DIALOG_ID, mSearchOptions
-                                .getEndHour(), mSearchOptions.getEndMinute());
+                        mHandler, END_TIME_DIALOG_ID, searchOptions
+                                .getEndHour(), searchOptions.getEndMinute());
                 startTimeDialog.show(getFragmentManager(), "endTimePicker");
             }
         });
-        mPickDate.setOnClickListener(new View.OnClickListener() {
+        dateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 DialogFragment dateDialog = new DatePickerFragment(mHandler,
-                        mSearchOptions.getMonth(), mSearchOptions.getDay(),
-                        mSearchOptions.getYear());
+                        searchOptions.getMonth(), searchOptions.getDay(),
+                        searchOptions.getYear());
                 dateDialog.show(getFragmentManager(), "dateTimePicker");
             }
         });
@@ -233,30 +235,30 @@ public class SearchFragment extends Fragment {
         // Access the default SharedPreferences
 
         // The SharedPreferences editor - must use commit() to submit changes
-        SharedPreferences.Editor editor = search.edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         //
         // Edit the saved preferences
-        editor.putBoolean("private", mSearchOptions.getPrivate());
-        editor.putBoolean("computer", mSearchOptions.getComputer());
-        editor.putBoolean("projector", mSearchOptions.getProjector());
-        editor.putBoolean("engineering", mSearchOptions.getEngi());
-        editor.putBoolean("library", mSearchOptions.getLib());
-        editor.putBoolean("wharton", mSearchOptions.getWhar());
-        editor.putBoolean("others", mSearchOptions.getOth());
-        editor.putInt("numberOfPeople", mSearchOptions.getNumberOfPeople());
-        editor.putBoolean("whiteboard", mSearchOptions.getWhiteboard());
+        editor.putBoolean("private", searchOptions.getPrivate());
+        editor.putBoolean("computer", searchOptions.getComputer());
+        editor.putBoolean("projector", searchOptions.getProjector());
+        editor.putBoolean("engineering", searchOptions.getEngi());
+        editor.putBoolean("library", searchOptions.getLib());
+        editor.putBoolean("wharton", searchOptions.getWhar());
+        editor.putBoolean("others", searchOptions.getOth());
+        editor.putInt("numberOfPeople", searchOptions.getNumberOfPeople());
+        editor.putBoolean("whiteboard", searchOptions.getWhiteboard());
         editor.commit();
     }
 
     private void setUpNumberOfPeopleSlider() {
-        mNumberOfPeopleSlider
+        numPeopleSlider
                 .setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
                     public void onStopTrackingTouch(SeekBar seekBar) {
                     }
 
                     public void onProgressChanged(SeekBar seekBar,
                             int progress, boolean fromUserTouch) {
-                        mSearchOptions.setNumberOfPeople(progress + 1);
+                        searchOptions.setNumberOfPeople(progress + 1);
                         updateNumberOfPeopleDisplay();
                     }
 
@@ -264,37 +266,46 @@ public class SearchFragment extends Fragment {
                     }
                 });
 
-        mSearchOptions
-                .setNumberOfPeople(mNumberOfPeopleSlider.getProgress() + 1);
+        searchOptions.setNumberOfPeople(numPeopleSlider.getProgress() + 1);
 
         updateNumberOfPeopleDisplay();
     }
 
     private void setUpCheckBoxes() {
 
-        mEngiBox.setChecked(search.getBoolean("engineering", true));
-        mWharBox.setChecked(search.getBoolean("wharton", true));
-        mLibBox.setChecked(search.getBoolean("library", true));
-        mOthBox.setChecked(search.getBoolean("others", true));
+        engineeringCheckBox.setChecked(sharedPreferences.getBoolean(
+                "engineering", true));
+        whartonCheckBox.setChecked(sharedPreferences
+                .getBoolean("wharton", true));
+        libraryCheckBox.setChecked(sharedPreferences
+                .getBoolean("library", true));
+        otherCheckBox.setChecked(sharedPreferences.getBoolean("others", true));
+
+        reservableCheckBox.setChecked(sharedPreferences.getBoolean(
+                "reservable", true));
 
     }
 
     private void setUpPrivate() {
 
-        mPrivateCheckBox.setChecked(search.getBoolean("private", false));
-        mWhiteboardCheckBox.setChecked(search.getBoolean("whiteboard", false));
-        mComputerCheckBox.setChecked(search.getBoolean("computer", false));
-        mProjectorCheckBox.setChecked(search.getBoolean("projector", false));
+        isPrivateCheckBox.setChecked(sharedPreferences.getBoolean("private",
+                false));
+        whiteboardCheckBox.setChecked(sharedPreferences.getBoolean(
+                "whiteboard", false));
+        computerCheckBox.setChecked(sharedPreferences.getBoolean("computer",
+                false));
+        projectorCheckBox.setChecked(sharedPreferences.getBoolean("projector",
+                false));
     }
 
     private void updateNumberOfPeopleDisplay() {
         String personPeopleString;
-        if (mSearchOptions.getNumberOfPeople() == 1) {
+        if (searchOptions.getNumberOfPeople() == 1) {
             personPeopleString = " person";
         } else {
             personPeopleString = " people";
         }
-        mNumberOfPeopleTextView.setText(Integer.toString(mSearchOptions
+        numPeopleTextView.setText(Integer.toString(searchOptions
                 .getNumberOfPeople()) + personPeopleString);
     }
 
@@ -332,8 +343,8 @@ public class SearchFragment extends Fragment {
     }
 
     private String convertTo12HourFormat(int hour, int minute) {
-        SimpleDateFormat displayFormat = new SimpleDateFormat("hh:mm a");
-        SimpleDateFormat parseFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat displayFormat = new SimpleDateFormat("hh:mm a", Locale.US);
+        SimpleDateFormat parseFormat = new SimpleDateFormat("HH:mm", Locale.US);
         String time = hour + ":" + minute;
         Date date;
         String convertedTime = "";
@@ -349,22 +360,22 @@ public class SearchFragment extends Fragment {
     private void updateStartTimeText() {
 
         String convertedTime = convertTo12HourFormat(
-                mSearchOptions.getStartHour(), mSearchOptions.getStartMinute());
+                searchOptions.getStartHour(), searchOptions.getStartMinute());
 
-        mPickStartTime.setText(convertedTime);
+        startTimeButton.setText(convertedTime);
     }
 
     private void updateEndTimeText() {
         String convertedTime = convertTo12HourFormat(
-                mSearchOptions.getEndHour(), mSearchOptions.getEndMinute());
+                searchOptions.getEndHour(), searchOptions.getEndMinute());
 
-        mPickEndTime.setText(convertedTime);
+        endTimeButton.setText(convertedTime);
     }
 
     private String convertDateFormat(int month, int day, int year) {
         SimpleDateFormat displayFormat = new SimpleDateFormat(
-                "EEE, MMM d, yyyy");
-        SimpleDateFormat parseFormat = new SimpleDateFormat("M-d-y");
+                "EEE, MMM d, yyyy", Locale.US);
+        SimpleDateFormat parseFormat = new SimpleDateFormat("M-d-y", Locale.US);
 
         String time = month + 1 + "-" + day + "-" + year;
         Date date;
@@ -379,9 +390,9 @@ public class SearchFragment extends Fragment {
     }
 
     private void updateDateText() {
-        String convertedTime = convertDateFormat(mSearchOptions.getMonth(),
-                mSearchOptions.getDay(), mSearchOptions.getYear());
-        mPickDate.setText(convertedTime);
+        String convertedTime = convertDateFormat(searchOptions.getMonth(),
+                searchOptions.getDay(), searchOptions.getYear());
+        dateButton.setText(convertedTime);
     }
 
     // Updates search options then delivers intent
@@ -391,40 +402,41 @@ public class SearchFragment extends Fragment {
             Intent i = new Intent(this.getActivity().getBaseContext(),
                     StudySpaceListActivity.class);
             // Put your searchOption class here
-            i.putExtra("SEARCH_OPTIONS", (Serializable) mSearchOptions);
+            i.putExtra("SEARCH_OPTIONS", (Serializable) searchOptions);
             // ends this activity
             startActivity(i);
         }
     }
 
     private void putDataInSearchOptionsObject() {
-        mSearchOptions
-                .setNumberOfPeople(mNumberOfPeopleSlider.getProgress() + 1);
-        mSearchOptions.setPrivate(mPrivateCheckBox.isChecked());
-        mSearchOptions.setWhiteboard(mWhiteboardCheckBox.isChecked());
-        mSearchOptions.setComputer(mComputerCheckBox.isChecked());
-        mSearchOptions.setProjector(mProjectorCheckBox.isChecked());
+        searchOptions.setNumberOfPeople(numPeopleSlider.getProgress() + 1);
+        searchOptions.setPrivate(isPrivateCheckBox.isChecked());
+        searchOptions.setWhiteboard(whiteboardCheckBox.isChecked());
+        searchOptions.setComputer(computerCheckBox.isChecked());
+        searchOptions.setProjector(projectorCheckBox.isChecked());
 
-        mSearchOptions.setEngi(mEngiBox.isChecked());
-        mSearchOptions.setWhar(mWharBox.isChecked());
-        mSearchOptions.setLib(mLibBox.isChecked());
-        mSearchOptions.setOth(mOthBox.isChecked());
+        searchOptions.setEngi(engineeringCheckBox.isChecked());
+        searchOptions.setWhar(whartonCheckBox.isChecked());
+        searchOptions.setLib(libraryCheckBox.isChecked());
+        searchOptions.setOth(otherCheckBox.isChecked());
+
+        searchOptions.setReservable(reservableCheckBox.isChecked());
     }
 
     private void resetTimeAndDateData() {
         // Initialize the date and time data based on the current time:
         final Calendar cStartTime = Calendar.getInstance();
         roundCalendar(cStartTime);
-        mSearchOptions.setStartHour(cStartTime.get(Calendar.HOUR_OF_DAY));
-        mSearchOptions.setStartMinute(cStartTime.get(Calendar.MINUTE));
+        searchOptions.setStartHour(cStartTime.get(Calendar.HOUR_OF_DAY));
+        searchOptions.setStartMinute(cStartTime.get(Calendar.MINUTE));
         final Calendar cEndTime = Calendar.getInstance();
         cEndTime.add(Calendar.HOUR_OF_DAY, 1);
         roundCalendar(cEndTime);
-        mSearchOptions.setEndHour(cEndTime.get(Calendar.HOUR_OF_DAY));
-        mSearchOptions.setEndMinute(cEndTime.get(Calendar.MINUTE));
-        mSearchOptions.setYear(cStartTime.get(Calendar.YEAR));
-        mSearchOptions.setMonth(cStartTime.get(Calendar.MONTH));
-        mSearchOptions.setDay(cStartTime.get(Calendar.DAY_OF_MONTH));
+        searchOptions.setEndHour(cEndTime.get(Calendar.HOUR_OF_DAY));
+        searchOptions.setEndMinute(cEndTime.get(Calendar.MINUTE));
+        searchOptions.setYear(cStartTime.get(Calendar.YEAR));
+        searchOptions.setMonth(cStartTime.get(Calendar.MONTH));
+        searchOptions.setDay(cStartTime.get(Calendar.DAY_OF_MONTH));
     }
 
     private void updateTimeAndDateDisplays() {
@@ -433,32 +445,36 @@ public class SearchFragment extends Fragment {
         updateDateText();
     }
 
-    private void captureViewElements(LinearLayout layout) {
+    private void captureViewElements(View layout) {
 
         // General:
-        mSearchButton = (Button) layout.findViewById(R.id.searchButton);
-        mFindNowButton = (Button) layout.findViewById(R.id.findNowButton);
-        mNumberOfPeopleTextView = (TextView) layout
+        searchButton = (Button) layout.findViewById(R.id.searchButton);
+        findNowButton = (Button) layout.findViewById(R.id.findNowButton);
+        numPeopleTextView = (TextView) layout
                 .findViewById(R.id.numberOfPeopleTextView);
-        mNumberOfPeopleSlider = (SeekBar) layout
+        numPeopleSlider = (SeekBar) layout
                 .findViewById(R.id.numberOfPeopleSlider);
-        mPrivateCheckBox = (CheckBox) layout.findViewById(R.id.privateCheckBox);
-        mWhiteboardCheckBox = (CheckBox) layout
+        isPrivateCheckBox = (CheckBox) layout
+                .findViewById(R.id.privateCheckBox);
+        whiteboardCheckBox = (CheckBox) layout
                 .findViewById(R.id.whiteboardCheckBox);
-        mComputerCheckBox = (CheckBox) layout
+        computerCheckBox = (CheckBox) layout
                 .findViewById(R.id.computerCheckBox);
-        mProjectorCheckBox = (CheckBox) layout
+        projectorCheckBox = (CheckBox) layout
                 .findViewById(R.id.projectorCheckBox);
 
-        mEngiBox = (CheckBox) layout.findViewById(R.id.engibox);
-        mWharBox = (CheckBox) layout.findViewById(R.id.whartonbox);
-        mLibBox = (CheckBox) layout.findViewById(R.id.libbox);
-        mOthBox = (CheckBox) layout.findViewById(R.id.otherbox);
+        engineeringCheckBox = (CheckBox) layout.findViewById(R.id.engibox);
+        whartonCheckBox = (CheckBox) layout.findViewById(R.id.whartonbox);
+        libraryCheckBox = (CheckBox) layout.findViewById(R.id.libbox);
+        otherCheckBox = (CheckBox) layout.findViewById(R.id.otherbox);
+
+        reservableCheckBox = (CheckBox) layout
+                .findViewById(R.id.reservableCheckBox);
 
         // Time and date:
-        mPickStartTime = (Button) layout.findViewById(R.id.pickStartTime);
-        mPickEndTime = (Button) layout.findViewById(R.id.pickEndTime);
-        mPickDate = (Button) layout.findViewById(R.id.pickDate);
+        startTimeButton = (Button) layout.findViewById(R.id.pickStartTime);
+        endTimeButton = (Button) layout.findViewById(R.id.pickEndTime);
+        dateButton = (Button) layout.findViewById(R.id.pickDate);
 
     }
 
@@ -475,25 +491,27 @@ public class SearchFragment extends Fragment {
         if (checkConnection()) {
             // reinitialize the date and time to current value
             resetTimeAndDateData();
-            mSearchOptions.setNumberOfPeople(mNumberOfPeopleSlider
-                    .getProgress());
-            mSearchOptions.setPrivate(false);
-            mSearchOptions.setWhiteboard(false);
-            mSearchOptions.setComputer(false);
-            mSearchOptions.setProjector(false);
-            mSearchOptions.setEngi(true);
-            mSearchOptions.setWhar(true);
-            mSearchOptions.setLib(true);
-            mSearchOptions.setOth(true);
+            searchOptions.setNumberOfPeople(numPeopleSlider.getProgress());
+            searchOptions.setPrivate(false);
+            searchOptions.setWhiteboard(false);
+            searchOptions.setComputer(false);
+            searchOptions.setProjector(false);
+            searchOptions.setEngi(true);
+            searchOptions.setWhar(true);
+            searchOptions.setLib(true);
+            searchOptions.setOth(true);
 
             // get the list of all the study spaces
             ArrayList<StudySpace> studySpaces = ((APIAccessor) getActivity()
                     .getApplication()).getStudySpaces();
             ArrayList<StudySpace> ss_list = new ArrayList<StudySpace>();
-            SharedPreferences favorites = this.getActivity().getSharedPreferences(StudySpaceListActivity.FAV_PREFERENCES, 0);
+            SharedPreferences favorites = this.getActivity()
+                    .getSharedPreferences(
+                            StudySpaceListActivity.FAV_PREFERENCES, 0);
             Map<String, ?> items = favorites.getAll();
-            Preferences preferences = new Preferences(); // Change this when bundle is
-                                             // implemented.
+            Preferences preferences = new Preferences(); // Change this when
+                                                         // bundle is
+            // implemented.
             for (String s : items.keySet()) {
                 // boolean fav = favorites.getBoolean(s, false);
                 if (Boolean.parseBoolean(items.get(s).toString())) {
@@ -504,8 +522,8 @@ public class SearchFragment extends Fragment {
 
             // filter them by location
             StudySpaceListAdapter ss_adapter = new StudySpaceListAdapter(
-                    getActivity(), R.layout.sslistitem, ss_list, mSearchOptions);
-            ss_adapter.setLocation(mLocation);
+                    getActivity(), R.layout.sslistitem, ss_list, searchOptions);
+            ss_adapter.setLocation(location);
             ss_adapter.filterSpaces();
             ss_adapter.updateFavorites(preferences);
 

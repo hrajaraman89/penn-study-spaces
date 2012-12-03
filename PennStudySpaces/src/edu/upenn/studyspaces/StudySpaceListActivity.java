@@ -17,14 +17,19 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.upenn.studyspaces.utilities.IntentCreators;
+import edu.upenn.studyspaces.utilities.ReservationNotifier;
 
 public class StudySpaceListActivity extends ListActivity {
 
@@ -126,10 +131,16 @@ public class StudySpaceListActivity extends ListActivity {
             }
         });
 
+        registerForContextMenu(getListView());
+
     }
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
+        startDetailsActivity(position);
+    }
+
+    private void startDetailsActivity(int position) {
         Intent i = new Intent(this, StudySpaceDetails.class);
         i.putExtra("STUDYSPACE", (StudySpace) getListAdapter()
                 .getItem(position));
@@ -205,9 +216,7 @@ public class StudySpaceListActivity extends ListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.meme:
-            startActivity(new Intent(this, Meme.class));
-            break;
+
         case R.id.about:
             startActivity(new Intent(this, About.class));
             break;
@@ -215,6 +224,46 @@ public class StudySpaceListActivity extends ListActivity {
             startActivity(new Intent(this, Help.class));
             break;
         }
+        return true;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenuInfo menuInfo) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.search_results_long_press_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
+                .getMenuInfo();
+        int menuItemIndex = item.getItemId();
+
+        switch (menuItemIndex) {
+        case R.id.addOrReserve:
+            StudySpace space = ss_adapter.getItem(info.position);
+            Intent intent;
+
+            if (space.isReservable()) {
+                intent = IntentCreators.getReserveIntent(space);
+            } else {
+                intent = IntentCreators.getCalIntent(space);
+            }
+
+            if (intent != null) {
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Whoops! Something went wrong..",
+                        Toast.LENGTH_LONG).show();
+            }
+            break;
+        case R.id.share:
+            startActivity(new ReservationNotifier().getSharingIntent(ss_adapter
+                    .getItem(info.position)));
+            break;
+        }
+
         return true;
     }
 }

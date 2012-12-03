@@ -18,13 +18,12 @@
             android:layout_marginRight="1dp"
             android:layout_weight="1"
             android:background="@color/darkgrey"
-            android:orientation="vertical"
-            android:onClick="onDetailsClick" >
+            android:orientation="vertical" >
 
             <ImageView
+                android:id="@+id/button_details"
                 android:layout_width="fill_parent"
                 android:layout_height="3dp"
-                android:id="@+id/button_details"
                 android:background="@color/darkgrey" />
 
             <TextView
@@ -39,61 +38,36 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@color/darkgrey"
-            android:orientation="vertical"
-            android:onClick="onFourSquareClick" >
-
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="3dp"
-                android:id="@+id/button_foursquare"
-                android:background="@color/darkgrey" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="37dp"
-                android:gravity="center"
-                android:text="@string/details"
-                android:textColor="@color/white"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
             android:layout_marginLeft="1dp"
             android:layout_weight="1"
             android:background="@color/darkgrey"
-            android:orientation="vertical"            
-            android:onClick="onMapClick" >
+            android:onClick="onMapClick"
+            android:orientation="vertical" >
 
             <ImageView
+                android:id="@+id/button_map"
                 android:layout_width="fill_parent"
                 android:layout_height="3dp"
-                android:id="@+id/button_map"
                 android:background="@color/darkgrey" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="37dp"
                 android:layout_gravity="center_vertical"
+                android:clickable="true"
                 android:gravity="center"
+                android:onClick="onMapClick"
                 android:text="@string/map"
                 android:textColor="@color/white"
-                android:textSize="18sp"
-                android:clickable="true"
-                android:onClick="onMapClick" />
+                android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
 
     <fragment
         android:id="@+id/fragment_container"
-        android:layout_above="@id/footer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/footer"
         class="edu.upenn.studyspaces.TabDetails" />
-
-    
 
 </RelativeLayout>

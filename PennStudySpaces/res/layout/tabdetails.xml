@@ -187,18 +187,19 @@
                 android:padding="10dp"
                 android:text="@string/add_reserve"
                 android:textSize="20sp" />
-        </LinearLayout>
-
-        <Button
+            
+            <Button
             android:id="@+id/shareButton"
-            android:layout_width="fill_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:onClick="onShareClick"
             android:text="@string/add_share_text"
             android:textSize="20sp" />
+        </LinearLayout>
 
+        
     </LinearLayout>
 
 </ScrollView>

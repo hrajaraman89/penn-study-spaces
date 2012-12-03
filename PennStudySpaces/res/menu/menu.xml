@@ -2,9 +2,6 @@
     <item android:id="@+id/about"
         android:title="About"
         android:icon="@drawable/iconabout" />
-    <item android:id="@+id/meme"
-        android:title="Meme"
-        android:icon="@drawable/iconmeme" />
     <item android:id="@+id/help"
         android:title="Help"
         android:icon="@drawable/iconhelp" />

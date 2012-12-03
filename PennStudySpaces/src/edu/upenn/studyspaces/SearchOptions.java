@@ -1,14 +1,10 @@
 package edu.upenn.studyspaces;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 public class SearchOptions implements Serializable, Parcelable {
 
@@ -31,6 +27,8 @@ public class SearchOptions implements Serializable, Parcelable {
     private boolean wharBox;
     private boolean libBox;
     private boolean othBox;
+
+    private boolean reservable;
 
     public void setNumberOfPeople(int _numberOfPeople) {
         numberOfPeople = _numberOfPeople;
@@ -94,6 +92,10 @@ public class SearchOptions implements Serializable, Parcelable {
 
     public void setOth(boolean _bool) {
         othBox = _bool;
+    }
+
+    public void setReservable(boolean reservable) {
+        this.reservable = reservable;
     }
 
     public int getNumberOfPeople() {
@@ -190,6 +192,10 @@ public class SearchOptions implements Serializable, Parcelable {
         return endDate;
     }
 
+    public boolean getReservable() {
+        return reservable;
+    }
+
     // Parcelable stuff:
 
     public int describeContents() {
@@ -207,7 +213,7 @@ public class SearchOptions implements Serializable, Parcelable {
         out.writeInt(month);
         out.writeInt(day);
         boolean[] booleanArray = { isPrivate, hasWhiteboard, hasComputer,
-                hasProjector, engiBox, wharBox, libBox, othBox };
+                hasProjector, engiBox, wharBox, libBox, othBox, reservable };
         out.writeBooleanArray(booleanArray);
     }
 
@@ -232,7 +238,7 @@ public class SearchOptions implements Serializable, Parcelable {
         month = in.readInt();
         day = in.readInt();
         boolean[] booleanArray = { false, false, false, false, false, false,
-                false, false };
+                false, false, false };
         in.readBooleanArray(booleanArray);
         isPrivate = booleanArray[0];
         hasWhiteboard = booleanArray[1];
@@ -242,6 +248,8 @@ public class SearchOptions implements Serializable, Parcelable {
         wharBox = booleanArray[5];
         libBox = booleanArray[6];
         othBox = booleanArray[7];
+
+        reservable = booleanArray[8];
     }
 
     public SearchOptions() {

@@ -1,14 +1,7 @@
 package edu.upenn.studyspaces;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class StudySpace implements Serializable {
 
@@ -40,7 +33,6 @@ public class StudySpace implements Serializable {
     private boolean hasBigScreen;
 
     private Room[] rooms;
-    private String[] foursquare;
 
     private String roomNames;
 
@@ -147,62 +139,6 @@ public class StudySpace implements Serializable {
         return this;
     }
 
-    public String[] getFoursquare() {
-        if (foursquare == null) {
-            Date d = new Date();
-            int year = (d.getYear() + 1900);
-            int month = (d.getMonth() + 1);
-            String m = "";
-            String da = "";
-            if (month < 10) {
-                m = "0" + month;
-            } else {
-                m = "" + month;
-            }
-            int day = d.getDate();
-            if (day < 10) {
-                da = "0" + day;
-            } else {
-                da = "" + day;
-            }
-            String date = year + "" + m + "" + da;
-
-            try {
-                String _url = "https://api.foursquare.com/v2/tips/search?ll="
-                        + latitude
-                        + ","
-                        + longitude
-                        + "&client_id=0XRPWALWWL4LCZ5DSWKU3UZ0GVGDCMKGADYSRPZYRLIVCPUM&client_secret=JWUKQD0HOKZGO4SBCR0N3NDCI40FTDFN03SS1W45AMRN5BBU&v="
-                        + date;
-
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(new URL(_url).openStream()));
-
-                String line = reader.readLine();
-
-                JSONObject json_obj = new JSONObject(line);
-
-                JSONObject responses = (JSONObject) json_obj.get("response");
-                JSONArray tips = responses.getJSONArray("tips");
-
-                String[] tips_text = new String[tips.length()];
-
-                for (int i = 0; i < tips.length(); i++) {
-                    JSONObject text = tips.getJSONObject(i);
-                    tips_text[i] = text.getString("text");
-                    System.out.println(tips_text[i]);
-                }
-
-                foursquare = tips_text;
-                return tips_text;
-            } catch (Exception e) {
-                return new String[0];
-            }
-        } else {
-            return foursquare;
-        }
-    }
-
     public int getWalkingDistanceFromGPSLocation() {
         return walkingDistanceFromCurrentGPSLocation;
     }
@@ -223,6 +159,10 @@ public class StudySpace implements Serializable {
 
     public boolean hasWhiteboard() {
         return hasWhiteboard;
+    }
+
+    public boolean isReservable() {
+        return !"N".equals(reserveType);
     }
 
     public String getReserveType() {

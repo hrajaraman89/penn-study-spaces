@@ -1,16 +1,18 @@
 package edu.upenn.studyspaces;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
-public class MainActivity extends FragmentActivity implements
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
+public class MainActivity extends SherlockFragmentActivity implements
         ActionBar.OnNavigationListener {
 
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
@@ -21,7 +23,7 @@ public class MainActivity extends FragmentActivity implements
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.
-        final ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
@@ -36,20 +38,20 @@ public class MainActivity extends FragmentActivity implements
 
         // If spaces were un-favorited, refresh favorites view
         if (getIntent().getBooleanExtra("FAVORITES", false))
-            getActionBar().setSelectedNavigationItem(1);
+            getSupportActionBar().setSelectedNavigationItem(1);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-            getActionBar().setSelectedNavigationItem(
+            getSupportActionBar().setSelectedNavigationItem(
                     savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getActionBar()
+        outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getSupportActionBar()
                 .getSelectedNavigationIndex());
     }
 
@@ -57,24 +59,28 @@ public class MainActivity extends FragmentActivity implements
     public boolean onNavigationItemSelected(int position, long id) {
         // When the given tab is selected, show the tab contents in the
         // container
-        Fragment fragment;
+
         switch (position) {
         case 0:
-            fragment = new SearchFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment, getString(R.string.search)).commit();
+            SherlockFragment searchFragment = new SearchFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, searchFragment,
+                            getString(R.string.search)).commit();
             break;
         case 1:
-            fragment = new FavoritesFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment, getString(R.string.favorites)).commit();
+            SherlockListFragment favoritesFragment = new FavoritesFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, favoritesFragment,
+                            getString(R.string.favorites)).commit();
         }
         return true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSherlock().getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
     }
@@ -82,9 +88,7 @@ public class MainActivity extends FragmentActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.meme:
-            startActivity(new Intent(this, Meme.class));
-            break;
+
         case R.id.about:
             startActivity(new Intent(this, About.class));
             break;

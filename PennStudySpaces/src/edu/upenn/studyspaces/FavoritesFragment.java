@@ -7,10 +7,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,7 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class FavoritesFragment extends ListFragment {
+import com.actionbarsherlock.app.SherlockListFragment;
+
+public class FavoritesFragment extends SherlockListFragment {
     private ProgressDialog ss_ProgressDialog = null;
     private ArrayList<StudySpace> ss_list = null; // List containing available
                                                   // rooms
@@ -152,21 +152,4 @@ public class FavoritesFragment extends ListFragment {
                     Toast.LENGTH_LONG).show();
         }
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.meme:
-            startActivity(new Intent(getActivity(), Meme.class));
-            break;
-        case R.id.about:
-            startActivity(new Intent(getActivity(), About.class));
-            break;
-        case R.id.help:
-            startActivity(new Intent(getActivity(), Help.class));
-            break;
-        }
-        return true;
-    }
-
 }
