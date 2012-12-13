@@ -7,9 +7,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
@@ -203,6 +209,70 @@ public class CustomMap extends MapActivity {
         return false;
     }
 
+    private Dialog createPinDetailsDialog(Activity mapActivity, final List<StudySpace> slist) {
+        final CustomMap activity = this;
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        SharedPreferences favorites = getSharedPreferences(StudySpaceListActivity.FAV_PREFERENCES, 0);
+        Map<String, ?> favItems = favorites.getAll();
+        final Preferences preferences = new Preferences(); // Change this when bundle is
+                                         // implemented.
+        for (String s : favItems.keySet()) {
+            // boolean fav = favorites.getBoolean(s, false);
+            if (Boolean.parseBoolean(favItems.get(s).toString())) {
+                preferences.addFavorites(s);
+            }
+        }
+        
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(activity, StudySpaceDetails.class);
+                intent.putExtra("STUDYSPACE", slist.get(which));
+                intent.putExtra("PREFERENCES", preferences);
+
+                startActivity(intent);
+            }
+        };
+
+        String buildingName = null;
+
+        // generate an array of room names from the given study space list
+        String[] items = new String[slist.size()];
+        for(int i = 0; i < slist.size(); i++) {
+            StudySpace space = slist.get(i);
+            if (buildingName == null) {
+                buildingName = space.getBuildingName();
+            }
+            String roomName = space.getRoomNames();
+            if (roomName.startsWith(buildingName)) {
+                // remove the redundant building name part inside the room name part
+                roomName = roomName.substring(buildingName.length()).trim();
+            }
+            items[i] = roomName;
+        }
+
+        String matchCounts = "";
+        if (items.length == 1) {
+            matchCounts = " (1 matching room)";
+        } else {
+            matchCounts = " (" + items.length + " matching rooms)";
+        }
+
+        builder.setTitle(buildingName + matchCounts);
+        builder.setItems(items, listener);
+
+        builder.setNegativeButton(R.string.cancel, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        
+        AlertDialog retval = builder.create();
+        return retval;
+    }
+    
     public class PinOverlay extends ItemizedOverlay<OverlayItem> {
 
         private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
@@ -249,17 +319,8 @@ public class CustomMap extends MapActivity {
 
             List<StudySpace> slist = studySpacePointsToSpaceList.get(p);
             if (slist != null && slist.size() > 0) {
-                String buildingName = slist.get(0).getBuildingName();
-                int nRoom = slist.size();
-                String roomCount;
-                if (nRoom == 1) {
-                    roomCount = " (1 matching room)";
-                } else {
-                    roomCount = " (" + nRoom + " matching rooms)";
-                }
-                Toast.makeText(getBaseContext(),
-                        buildingName + roomCount + "\n\n" + add,
-                        Toast.LENGTH_LONG * 3).show();
+                Dialog dialog = createPinDetailsDialog(getParent(), slist);
+                dialog.show();
             } else {
                 Toast.makeText(getBaseContext(), add, Toast.LENGTH_LONG * 3)
                         .show();
