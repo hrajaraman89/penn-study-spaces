@@ -26,11 +26,11 @@ import edu.upenn.studyspaces.StudySpace;
 import edu.upenn.studyspaces.StudySpaceListActivity;
 import edu.upenn.studyspaces.StudySpaceListAdapter;
 
-public class MappingSearchResultsTest extends ActivityInstrumentationTestCase2<MainActivity> {
+public class MapPinDetailsDialogTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
     private Solo solo;
 
-    public MappingSearchResultsTest() {
+    public MapPinDetailsDialogTest() {
         super(MainActivity.class);
     }
 
@@ -162,11 +162,11 @@ public class MappingSearchResultsTest extends ActivityInstrumentationTestCase2<M
         assertEquals(true, movedToMapActivity);
 
         CustomMap mapActivity = (CustomMap) solo.getCurrentActivity();
-        MapView mapView = (MapView) mapActivity.findViewById(R.id.mapview);
+        final MapView mapView = (MapView) mapActivity.findViewById(R.id.mapview);
         solo.waitForView(mapView);
         List<Overlay> overlays = mapView.getOverlays();
         
-        PinOverlay buildingOverlayItems;
+        final PinOverlay buildingOverlayItems;
         
         // check current location
         LocationManager locationManager = (LocationManager) mapActivity.getSystemService(Context.LOCATION_SERVICE);
@@ -185,11 +185,22 @@ public class MappingSearchResultsTest extends ActivityInstrumentationTestCase2<M
         int buildingOverlayCount = buildingOverlayItems.size();
         assertEquals(geoPoints.size(), buildingOverlayCount);
         for(int i = 0; i < buildingOverlayCount; i++) {
-            GeoPoint point = buildingOverlayItems.getItem(i).getPoint();
-            assertEquals(true, geoPoints.contains(point));
+            final GeoPoint point = buildingOverlayItems.getItem(i).getPoint();
+            
+            mapActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    buildingOverlayItems.onTap(point, mapView);
+                }
+            });
+
+            solo.waitForText("Cancel");
+            solo.clickInList(0);
+            boolean activityWait = solo.waitForActivity("StudySpaceDetails");
+            
+            assertTrue(activityWait);
+            
+            solo.goBack();
         }
-        
-        solo.scrollViewToSide(mapView, Solo.LEFT);
-        // geoPoints of all matching study places are found. Test is good
     }
 }
