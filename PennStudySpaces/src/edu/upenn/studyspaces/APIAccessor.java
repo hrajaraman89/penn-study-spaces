@@ -37,7 +37,7 @@ public class APIAccessor extends Application {
         buildSpaces.start();
     }
 
-    private void buildStudySpaces() {
+    private synchronized void buildStudySpaces() {
 
         ArrayList<StudySpace> previousSpaces = this.studySpaces;
         this.studySpaces = new ArrayList<StudySpace>();

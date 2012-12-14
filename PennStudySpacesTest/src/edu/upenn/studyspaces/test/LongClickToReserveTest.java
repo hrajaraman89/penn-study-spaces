@@ -1,6 +1,7 @@
 package edu.upenn.studyspaces.test;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.UiThreadTest;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -14,7 +15,7 @@ import edu.upenn.studyspaces.StudySpaceListActivity;
 public class LongClickToReserveTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
     private Solo solo;
-
+    private MainActivity searchActivity;
     public LongClickToReserveTest() {
         super(MainActivity.class);
     }
@@ -22,8 +23,8 @@ public class LongClickToReserveTest extends ActivityInstrumentationTestCase2<Mai
     protected void setUp() throws Exception {
         // make sure we start from scratch for each test
         super.setUp();
-        MainActivity activity = getActivity();
-        solo = new Solo(getInstrumentation(), activity);
+         searchActivity = getActivity();
+        solo = new Solo(getInstrumentation(), searchActivity);
     }
     
     protected void tearDown() {
@@ -31,59 +32,18 @@ public class LongClickToReserveTest extends ActivityInstrumentationTestCase2<Mai
     }
     
     public void testEngineerWhartonLibrary10PeoplePrivateSearch() {
-
         // select 10 people, check engineering, wharton, library buildings and private places
-        setSearchPreference(10, new boolean[] { true, true, true, false },
-                new boolean[] { true, false, false, false });
-
-        solo.clickOnButton("Search");
-
-        runAndVerify();
-    }
-
-    private void setSearchPreference(int numOfPeople, boolean[] building, boolean[] features) {
         solo.waitForActivity("MainActivity");
-        MainActivity searchActivity = (MainActivity) solo.getCurrentActivity();
+        searchActivity.runOnUiThread(new Runnable() {
 
-        ProgressBar progressBar = (ProgressBar) searchActivity.findViewById(R.id.numberOfPeopleSlider);
-        // 0 based indexing, has to subtract 1
-        solo.setProgressBar(progressBar, numOfPeople - 1);
-    
-        CheckBox engineeringCheckBox = (CheckBox) searchActivity.findViewById(R.id.engibox);
-        if (engineeringCheckBox.isChecked() != building[0]) {
-            solo.clickOnCheckBox(4);
-        }
-    
-        CheckBox whartonCheckBox = (CheckBox) searchActivity.findViewById(R.id.whartonbox);
-        if (whartonCheckBox.isChecked() != building[1]) {
-            solo.clickOnCheckBox(5);
-        }
-        CheckBox libraryCheckBox = (CheckBox) searchActivity.findViewById(R.id.libbox);
-        if (libraryCheckBox.isChecked() != building[2]) {
-            solo.clickOnCheckBox(6);
-        }
-        CheckBox otherCheckBox = (CheckBox) searchActivity.findViewById(R.id.otherbox);
-        if (otherCheckBox.isChecked()  != building[3]) {
-            solo.clickOnCheckBox(7);
-        }
-    
-        CheckBox privateCheckBox = (CheckBox) searchActivity.findViewById(R.id.privateCheckBox);
-        if (privateCheckBox.isChecked() != features[0]) {
-            solo.clickOnCheckBox(0);
-        }
-        CheckBox whiteboardCheckBox = (CheckBox) searchActivity.findViewById(R.id.whiteboardCheckBox);
-        if (whiteboardCheckBox.isChecked() != features[1]) {
-            solo.clickOnCheckBox(1);
-        }
-        CheckBox computerCheckBox = (CheckBox) searchActivity.findViewById(R.id.computerCheckBox);
-        if (computerCheckBox.isChecked() != features[2]) {
-            solo.clickOnCheckBox(2);
-        }
-        CheckBox projectorCheckBox = (CheckBox) searchActivity.findViewById(R.id.projectorCheckBox);
-        if (projectorCheckBox.isChecked() != features[3]) {
-            solo.clickOnCheckBox(3);
-        }
-        
+            @Override
+            public void run() {
+                setSearchPreference(10, new boolean[] { true, true, true, false },
+                        new boolean[] { true, false, false, false, false });
+            }
+            
+        });
+       
         // select the time to be from 1pm to 2pm for safety, other time might lead to weird room availability.
         solo.clickOnButton(1);
         solo.setTimePicker(0, 13, 0);
@@ -91,6 +51,44 @@ public class LongClickToReserveTest extends ActivityInstrumentationTestCase2<Mai
         solo.clickOnButton(2);
         solo.setTimePicker(0, 14, 0);
         solo.clickOnButton("Done");
+
+        solo.clickOnButton("Search");
+
+        runAndVerify();
+    }
+
+    private void setSearchPreference(int numOfPeople, boolean[] building, boolean[] features) {
+        ProgressBar progressBar = (ProgressBar) searchActivity.findViewById(R.id.numberOfPeopleSlider);
+        // 0 based indexing, has to subtract 1
+        solo.setProgressBar(progressBar, numOfPeople - 1);
+    
+        CheckBox engineeringCheckBox = (CheckBox) searchActivity.findViewById(R.id.engibox);
+        engineeringCheckBox.setChecked(building[0]);
+    
+        CheckBox whartonCheckBox = (CheckBox) searchActivity.findViewById(R.id.whartonbox);
+        whartonCheckBox.setChecked(building[1]);
+
+        CheckBox libraryCheckBox = (CheckBox) searchActivity.findViewById(R.id.libbox);
+        libraryCheckBox.setChecked(building[2]);
+
+        CheckBox otherCheckBox = (CheckBox) searchActivity.findViewById(R.id.otherbox);
+        otherCheckBox.setChecked(building[3]);
+
+        CheckBox privateCheckBox = (CheckBox) searchActivity.findViewById(R.id.privateCheckBox);
+        privateCheckBox.setChecked(features[0]);
+
+        CheckBox whiteboardCheckBox = (CheckBox) searchActivity.findViewById(R.id.whiteboardCheckBox);
+        whiteboardCheckBox.setChecked(features[1]);
+
+        CheckBox computerCheckBox = (CheckBox) searchActivity.findViewById(R.id.computerCheckBox);
+        computerCheckBox.setChecked(features[2]);
+
+        CheckBox projectorCheckBox = (CheckBox) searchActivity.findViewById(R.id.projectorCheckBox);
+        projectorCheckBox.setChecked(features[3]);
+        
+        CheckBox reservableCheckBox = (CheckBox) searchActivity.findViewById(R.id.reservableCheckBox);
+        reservableCheckBox.setChecked(features[4]);
+       
     }
 
     private void runAndVerify() {
@@ -105,6 +103,9 @@ public class LongClickToReserveTest extends ActivityInstrumentationTestCase2<Mai
             boolean waitForDialogToClose = solo.waitForDialogToClose(90000);
             assertEquals(true, waitForDialogToClose);
         }
+
+        //solo.searchText scrolls down so need to scroll back up to top.
+        while(solo.scrollUp());
 
         ListView listView = ssListActivity.getListView();
         solo.waitForView(listView);
