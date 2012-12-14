@@ -216,10 +216,6 @@ public class StudySpaceListActivity extends ListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-        case R.id.about:
-            startActivity(new Intent(this, About.class));
-            break;
         case R.id.help:
             startActivity(new Intent(this, Help.class));
             break;

@@ -1,7 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/about"
-        android:title="About"
-        android:icon="@drawable/iconabout" />
     <item android:id="@+id/help"
         android:title="Help"
         android:icon="@drawable/iconhelp" />
